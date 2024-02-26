@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "client-test"
+version = "0.1.0"
+description = ""
+authors = ["mewtwoitey <mewtwoitey@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+textual = "^0.52.1"
+autobahn = {extras = ["asyncio"], version = "^23.6.2"}
+
+[tool.poetry.group.dev.dependencies]
+ruff = { version= "^0.1.14"}
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.ruff]
+line-length =  120
+target-version = "py310"
+select = ["ALL"]
+ignore = ["D101","D100","D102","D107","D103","D401","INP001","FBT003","S311"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"

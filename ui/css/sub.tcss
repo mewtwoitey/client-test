@@ -1,0 +1,12 @@
+SubScreen #top_cont {
+    align: left middle;
+    height:1fr;
+}
+
+SubScreen #back_button {
+    border: none;
+}
+/* the tag associated with all the elements container for the rest of the content*/
+SubScreen #content_cont {
+    height: 15fr;
+}

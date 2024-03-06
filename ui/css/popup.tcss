@@ -1,0 +1,21 @@
+PopupScreen {
+    align: centre middle;
+}
+
+PopupScreen main_content {
+    border: thick $background 50%;
+    background: $surface;
+}
+
+ConfirmationPopup main_content {
+    layout: grid; 
+    grid-size: 2 2;
+}
+
+ConfirmationPopup Button {
+    width: 20%;
+}
+
+ConfirmationPopup Label {
+    grid-span: 2;
+}

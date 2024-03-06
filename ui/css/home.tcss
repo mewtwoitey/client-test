@@ -1,0 +1,31 @@
+Home #settings_cont{
+    align: left middle;
+    height:1fr;
+}
+Home #image_cont{
+    height: 10fr;
+}
+Home #middle_cont {
+    align: center middle;
+    height:5fr;
+
+}
+Home #bottom_cont {
+    height: 3fr;
+    /*these this bit spreads them out equidistanly*/
+    align: center middle;
+    layout: grid;
+    grid-size: 3 1; 
+}
+Home #play_button {
+    width: 50%;
+    height: 5;
+
+}
+Home #settings_button{
+    border: none;
+    /* so the button does not need to take up that much of the screen*/ 
+}
+Home .small_button {
+    width: 30%;
+}

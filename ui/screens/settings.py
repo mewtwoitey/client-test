@@ -1,9 +1,12 @@
 from pathlib import Path
 
+from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container
-from textual.widgets import Placeholder
+from textual.widgets import Button, Placeholder
+from textual.widgets.option_list import Option
 
+from ui.custom.screens.popup import ListPopup
 from ui.custom.screens.subscreen import SubScreen
 
 
@@ -15,7 +18,19 @@ class Settings(SubScreen):
     def compose(self: "Settings") -> ComposeResult:
         yield from super().compose() # gets all the elements from super
         with Container(id="content_cont"):
-            yield Placeholder("settings")
+            yield Button("test 123",id="test_button")
+
+
+    @on(Button.Pressed,"#test_button")
+    def test_button(self:"Settings") -> None:
+        self.app.push_screen(
+            ListPopup(
+                items = (
+                    Option("yes",id="yes"),
+                    Option("no",id="no"),
+                ),
+            ),
+        )
 
 
 

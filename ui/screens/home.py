@@ -4,7 +4,7 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Center, Container, Horizontal
 from textual.screen import Screen
-from textual.widgets import Button, Placeholder
+from textual.widgets import Button
 
 from ui.custom.widgets.image import Image
 

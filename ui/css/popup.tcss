@@ -1,27 +1,39 @@
 PopupScreen {
     align: center middle;
-    background: $boost 80%;
+    background: $boost 0%;
 }
 
-PopupScreen #main_content {
-    width: 60%;
-    height: auto;
-    max-height: 60%
+
+
+ListPopup #main_content  {
+    align: center middle;
+    width: auto;
+    height:auto;
+    background: $surface;
 }
 
 ConfirmationPopup #main_content {
-    layout: grid; 
-    grid-size: 2 2;
+    width: 40%;
+    height:auto;
+    align: center middle;
+    layout: grid;
+    grid-size: 2 2; 
+    border: ascii $primary;
 }
 
 ConfirmationPopup Button {
     width: 20%;
+    
 }
 
 ConfirmationPopup Label {
-    row-span: 2;
+    column-span: 2;
+    text-align: center;
 }
 
 ListPopup OptionList{
+    height:auto;
     border: ascii $primary;
+    width:20;
 }
+

@@ -35,7 +35,7 @@ class ConfirmationPopup(PopupScreen):
             case "yes_button":
                 self.dismiss(True)
             case "no_button":
-                self.action_dismiss(False)
+                self.dismiss(False)
 
 class ListPopup(PopupScreen):
     def __init__(self: "ListPopup", name: str | None = None, id: str | None = None, classes: str | None = None,items: list[Option] | None = None) -> None:
@@ -43,11 +43,14 @@ class ListPopup(PopupScreen):
         super().__init__(name, id, classes)
         self.items = items
     def compose(self: "ListPopup") -> ComposeResult:
+
         with Container(id="main_content"):
             yield OptionList(
                 *self.items,
                 id = "list_options",
             )
+
+
 
     @on(OptionList.OptionSelected)
     def chosen(self:"ListPopup", details) -> None:

@@ -4,7 +4,7 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Center, Container, Horizontal
 from textual.screen import Screen
-from textual.widgets import Button
+from textual.widgets import Button, Placeholder
 
 from ui.custom.widgets.image import Image
 
@@ -14,6 +14,7 @@ class Home(Screen):
     BINDINGS = [  # noqa: RUF012
         ("escape, backspace","quit()","Exits the game"),
     ]
+
 
 
     def compose(self: "Home") -> ComposeResult:

@@ -4,6 +4,8 @@ Home #settings_cont{
 }
 Home #image_cont{
     height: 10fr;
+    align-horizontal: center;
+    
 }
 Home #middle_cont {
     align: center middle;

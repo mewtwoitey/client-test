@@ -8,8 +8,10 @@ from utils.useful import Result
 FILENAME = "save.sav"
 
 
+
+
 def write_to_save(dictionary_object: dict):
-    """writes a dictionary object to a localfile."""
+    """Writes a dictionary object to a localfile."""
     json_str = ujson.dumps(dictionary_object)
     compressed = zlib.compress(json_str.encode(),level=9) # reduce the most amount of space on player's computer
     encoded = base64.b85encode(compressed)

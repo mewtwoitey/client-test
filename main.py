@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 #import asyncio
 #from collections.abc import Iterable
 #from os import environ
@@ -10,18 +12,23 @@ from textual.app import App
 from ui.screens.home import Home
 from ui.screens.settings import Settings
 
+from utils.networkmanager import NetworkManager
 
-class TestWidget(App):
-    comp = None
+
+class Main(App):
+
+    network: NetworkManager
     SCREENS = {"home": Home(), "settings": Settings()}  # noqa: RUF012
-    def __init__(self,*args) -> None: #session:ApplicationSession,runner:ApplicationRunner
-        super().__init__(*args)
+    def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
+        super().__init__()
         self.confirm = False
-        #self.session = session
-        #self.runner = runner
+
 
     def on_mount(self) -> None:
         self.push_screen("home")
+
+    def trigger_error(self: Main,message: str):
+        #TODO: do an error screem
 
 
     async def on_load(self) -> None:

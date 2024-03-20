@@ -32,7 +32,7 @@ venv = ".venv"
 line-length =  120
 target-version = "py310"
 select = ["ALL"]
-ignore = ["D101","D100","D102","D107","D103","D401","INP001","FBT003","S311","SIM117","ERA001"]
+ignore = ["D101","D100","D102","D107","D103","D401","INP001","FBT003","S311","SIM117","ERA001", "RET504"]
 extend-exclude = ["external"]
 
 [tool.ruff.lint.pydocstyle]

@@ -9,4 +9,5 @@ SubScreen #back_button {
 /* the tag associated with all the elements container for the rest of the content*/
 SubScreen #content_cont {
     height: 15fr;
+    
 }

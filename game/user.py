@@ -47,7 +47,7 @@ class Me:
         from_json = from_json.value
         self.token = from_json["token"]
         self.decks = from_json["decks"]
-        return Result(False)
+        return Result(True)
 
     def is_registered(self: Me) -> bool:
         # used to prevent the user from doing action before they are logged in

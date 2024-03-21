@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 #import asyncio
 #from collections.abc import Iterable
 #from os import environ
-
-
 #from autobahn.asyncio.wamp import ApplicationRunner, ApplicationSession
 #from autobahn.wamp.types import ComponentConfig
 from textual.app import App
@@ -12,7 +12,8 @@ from textual.app import App
 from ui.screens.home import Home
 from ui.screens.settings import Settings
 
-from utils.networkmanager import NetworkManager
+if TYPE_CHECKING:
+    from utils.networkmanager import NetworkManager
 
 
 class Main(App):
@@ -21,14 +22,14 @@ class Main(App):
     SCREENS = {"home": Home(), "settings": Settings()}  # noqa: RUF012
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
-        self.confirm = False
 
 
     def on_mount(self) -> None:
         self.push_screen("home")
 
     def trigger_error(self: Main,message: str):
-        #TODO: do an error screem
+        #TODO: do an error scree
+        pass
 
 
     async def on_load(self) -> None:
@@ -61,5 +62,5 @@ class Main(App):
 #realm = "crossbardemo"
 #runner = ApplicationRunner(url, realm)
 
-t = TestWidget()#runner=runner,session=Component)
+t = Main()#runner=runner,session=Component)
 t.run()

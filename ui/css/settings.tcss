@@ -1,0 +1,4 @@
+Settings #content_cont {
+    layout: grid;
+    align: center middle;
+}

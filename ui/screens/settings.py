@@ -20,9 +20,8 @@ class Settings(SubScreen):
         yield from super().compose()  # gets all the elements from super
         with Container(id="content_cont"):
             yield Button("Theme Selection", id="theme_button")
-            yield Button("Copy Token", id="token_button")
-            yield Button("Token Input", id="Token_input_Button")
-            
+            yield Button("Create an account", id= "create_account_button", disabled=(not self.app.me.is_registered))
+
 
     @on(Button.Pressed, "#theme_button")
     def test_button(self: "Settings") -> None:
@@ -44,12 +43,11 @@ class Settings(SubScreen):
             select_option,
         )
 
-    @on(Button.Pressed, "#test_button2")
+    @on(Button.Pressed, "#create_account_button")
     def test_button2(self: "Settings") -> None:
         def select_option(select: bool) -> None:
             if select:
-                pass
-
+                self.run_worker(self.app.network.me.create_user())
         self.app.push_screen(
             ConfirmationPopup(),
             select_option,

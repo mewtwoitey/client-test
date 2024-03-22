@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING
 
 import ujson
 
+if TYPE_CHECKING:
+    from typing import Any, Self
 
 # used for handling errors
 @dataclass
@@ -15,11 +17,13 @@ class Result:
 
 
 
-    def from_json(self: Result,json_str: str) -> :
+    def from_json(json_str: str) -> Self:
         dumped = ujson.loads(json_str)
-        self.successful = dumped["suc"]
-        self.error_msg = dumped["err_msg"]
-        self.value = dumped["val"]
+        res = Result()
+        res.successful = dumped["suc"]
+        res.error_msg = dumped["err_msg"]
+        res.value = dumped["val"]
+        return res
 
 
 

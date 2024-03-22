@@ -45,8 +45,9 @@ class Me:
             return Result(False)
 
         from_json = from_json.value
-        self.token = from_json["token"]
-        self.decks = from_json["decks"]
+        self.set_token(from_json["token"])
+        for name, deck in from_json["decks"]:
+            self.add_deck(name,deck)
         return Result(True)
 
     def is_registered(self: Me) -> bool:

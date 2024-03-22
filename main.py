@@ -9,19 +9,24 @@ from typing import TYPE_CHECKING
 #from autobahn.wamp.types import ComponentConfig
 from textual.app import App
 
+from game.user import Me
 from ui.screens.home import Home
 from ui.screens.settings import Settings
 
 if TYPE_CHECKING:
     from utils.networkmanager import NetworkManager
+    
 
 
 class Main(App):
 
     network: NetworkManager
+    me : Me
     SCREENS = {"home": Home(), "settings": Settings()}  # noqa: RUF012
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
+        self.me = Me()
+        self.me.get_file()
 
 
     def on_mount(self) -> None:

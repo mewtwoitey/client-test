@@ -48,7 +48,7 @@ class NetworkManager(ApplicationSession):
 
     async def call_function(self: NetworkManager, address:str, *args: list[Any]) -> Result:
         res = await self.call(address, *args)
-        res_object = Result().from_json(res)
+        res_object = Result.from_json(res)
         return res_object
 
     async def pull_card(self: NetworkManager, theme:str):
@@ -57,7 +57,7 @@ class NetworkManager(ApplicationSession):
 
     async def create_user(self: NetworkManager) -> Result:
         return self.call_function("main.not_games.create_user")
-    
+
     async def valid_token(self: NetworkManager,token:str) -> Result:
         return self.call("com.not_games.valid_user",token)
 

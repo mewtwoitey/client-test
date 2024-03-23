@@ -38,14 +38,14 @@ class Me:
         to_json = {"token": self.token, "decks": self.decks}
         return write_to_save(to_json)
 
-    def get_file(self: Me) -> Result:
+    async def get_file(self: Me) -> Result:
         from_json = read_from_save()
         if not from_json.successful:
             #if a file has not been found usually when it is the first time opening the game
             return Result(False)
 
         from_json = from_json.value
-        self.set_token(from_json["token"])
+        await self.set_token(from_json["token"])
         for name, deck in from_json["decks"]:
             self.add_deck(name,deck)
         return Result(True)
@@ -97,7 +97,9 @@ class Me:
     async def create_user(self: Me):
         if self.is_registered():
             return Result(False,"Account already exists.")
-        token = await self.ui_app.network.create_user().value
+    
+        res = await self.ui_app.network.create_user()
+        token  = res.value
         await self.set_token(token)
         self.update_file()
         return Result(True)

@@ -23,7 +23,9 @@ class NetworkManager(ApplicationSession):
         self.ui_app : Main = config.extra["ui"]
         self.ui_app.network = self
         self.me = Me(self.ui_app)
-        self.me.get_file()
+
+    async def onJoin(self: NetworkManager,_ : Any):
+        await self.me.get_file()
 
 
     async def process_broadcast(self: NetworkManager,message:str):
@@ -55,12 +57,12 @@ class NetworkManager(ApplicationSession):
         return res_object
 
     async def pull_card(self: NetworkManager, theme:str):
-        result = await self.call_function("main.not_games.pull_card",theme,self.ui_app.me.token)
+        result = await self.call_function("com.not_games.pull_card",theme,self.ui_app.me.token)
         return result
 
     async def create_user(self: NetworkManager) -> Result:
-        return self.call_function("main.not_games.create_user")
+        return await self.call_function("com.not_games.create_user")
 
     async def valid_token(self: NetworkManager,token:str) -> Result:
-        return self.call("com.not_games.valid_user",token)
+        return await self.call_function("com.not_games.valid_user",token)
 

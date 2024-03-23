@@ -19,10 +19,11 @@ class Result:
 
     def from_json(json_str: str) -> Self:
         dumped = ujson.loads(json_str)
-        res = Result()
-        res.successful = dumped["suc"]
-        res.error_msg = dumped["err_msg"]
-        res.value = dumped["val"]
+        res = Result(
+            dumped["suc"],
+            dumped["err_msg"],
+            dumped["val"],
+        )
         return res
 
 

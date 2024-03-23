@@ -48,16 +48,6 @@ class Main(App):
 
 
 
-"""class Component(ApplicationSession):
-
-    def __init__(self, config: ComponentConfig | None = None):
-        super().__init__(config)
-        self.ui = config.extra["ui"]
-        self.ui.comp = self
-
-
-    async def onJoin(self,details):
-        pass"""
 
 
 

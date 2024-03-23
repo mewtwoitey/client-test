@@ -48,6 +48,8 @@ class Settings(SubScreen):
         def select_option(select: bool) -> None:
             if select:
                 self.run_worker(self.app.network.me.create_user())
+                self.query_one("#create_account_button").disabled = True
+
         self.app.push_screen(
             ConfirmationPopup(),
             select_option,

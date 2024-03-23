@@ -25,6 +25,7 @@ def write_to_save(dictionary_object: dict):
     return Result(True)
 
 def read_from_save():
+    print()
     try:
         with open(FILENAME,"rb") as f:
             filedata = f.read()

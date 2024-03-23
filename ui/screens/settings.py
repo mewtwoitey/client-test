@@ -20,7 +20,7 @@ class Settings(SubScreen):
         yield from super().compose()  # gets all the elements from super
         with Container(id="content_cont"):
             yield Button("Theme Selection", id="theme_button")
-            yield Button("Create an account", id= "create_account_button", disabled=(not self.app.me.is_registered))
+            yield Button("Create an account", id= "create_account_button", disabled=(self.app.network.me.is_registered()))
 
 
     @on(Button.Pressed, "#theme_button")

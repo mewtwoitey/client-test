@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from utils.networkmanager import NetworkManager
 from utils.storage import read_from_save, write_to_save
 from utils.useful import Result
 
@@ -27,12 +26,13 @@ class Player:
 
 
 class Me:
-    token: str
-    decks: dict[str, dict[int, int]] = {}
-    cards: dict[int, int] = {}
-    player: Player
-    hand: int
-    ui_app: Main
+    def __init__(self, ui_app: Main) -> None:
+        self.token: str = None
+        self.decks: dict[str, dict[int, int]] = {}
+        self.cards: dict[int, int] = {}
+        self.player: Player = None
+        self.hand: int = None
+        self.ui_app: Main = ui_app
 
     def update_file(self: Me) -> Result:
         to_json = {"token": self.token, "decks": self.decks}

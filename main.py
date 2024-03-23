@@ -2,20 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-#import asyncio
+import asyncio
 #from collections.abc import Iterable
 #from os import environ
-#from autobahn.asyncio.wamp import ApplicationRunner, ApplicationSession
-#from autobahn.wamp.types import ComponentConfig
+from autobahn.asyncio.wamp import ApplicationRunner
 from textual.app import App
 
 from game.user import Me
 from ui.screens.home import Home
 from ui.screens.settings import Settings
+from utils.networkmanager import NetworkManager
 
-if TYPE_CHECKING:
-    from utils.networkmanager import NetworkManager
-    
+
 
 
 class Main(App):
@@ -25,8 +23,6 @@ class Main(App):
     SCREENS = {"home": Home(), "settings": Settings()}  # noqa: RUF012
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
-        self.me = Me()
-        self.me.get_file()
 
 
     def on_mount(self) -> None:
@@ -38,10 +34,12 @@ class Main(App):
 
 
     async def on_load(self) -> None:
-        #self.runner.extra = {"ui":self}
-        #b = self.runner.run(self.session,start_loop=False)
-        #asyncio.create_task(b)
-        pass
+
+        #start the networking on the load
+        runner = ApplicationRunner("ws://127.0.0.1:1234/ws","game")
+        runner.extra = {"ui":self}
+        b = runner.run(NetworkManager,start_loop=False)
+        asyncio.create_task(b)
 
 
 

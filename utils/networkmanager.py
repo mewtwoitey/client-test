@@ -6,6 +6,7 @@ import ujson
 from autobahn.asyncio.wamp import ApplicationRunner, ApplicationSession
 
 from utils.useful import Result
+from game.user import Me
 
 if TYPE_CHECKING:
     from autobahn.wamp.types import ComponentConfig
@@ -21,6 +22,8 @@ class NetworkManager(ApplicationSession):
         super().__init__(config)
         self.ui_app : Main = config.extra["ui"]
         self.ui_app.network = self
+        self.me = Me(self.ui_app)
+        self.me.get_file()
 
 
     async def process_broadcast(self: NetworkManager,message:str):

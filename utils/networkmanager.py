@@ -66,3 +66,7 @@ class NetworkManager(ApplicationSession):
     async def valid_token(self: NetworkManager,token:str) -> Result:
         return await self.call_function("com.not_games.valid_user",token)
 
+    async def draw_card(self: NetworkManager, game_id: int, player_id: int) -> Result:
+        return await self.call_function("com.games.draw_card",game_id,player_id)
+
+

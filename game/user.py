@@ -26,7 +26,7 @@ class Player:
 
 
 class Me:
-    def __init__(self, ui_app: Main) -> None:
+    def __init__(self: Me, ui_app: Main) -> None:
         self.token: str = None
         self.decks: dict[str, dict[int, int]] = {}
         self.cards: dict[int, int] = {}

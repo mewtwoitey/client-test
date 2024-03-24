@@ -1,0 +1,36 @@
+GameScreen #board_cont {
+    width: 2fr;
+}
+
+GameScreen #board_side_cont {
+    width: 1fr;
+    layout: grid;
+    
+    grid-size: 1 6;
+}
+
+PlayerList {
+    text-align: center;
+}
+
+Phase {
+    text-align: center;
+}
+
+PlayerListStats {
+    height: auto;
+    width: auto;
+    border: ascii $accent;
+}
+
+GameScreen #stats_cont {
+    align: center top;
+    layout: grid;
+    grid-size: 4 1;
+}
+
+GameScreen .vertical_cont {
+    
+    layout: grid;
+    grid-size: 2 1;
+}

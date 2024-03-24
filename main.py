@@ -11,6 +11,7 @@ from textual.app import App
 from game.user import Me
 from ui.screens.home import Home
 from ui.screens.settings import Settings
+from ui.screens.game import GameScreen
 from utils.networkmanager import NetworkManager
 
 
@@ -20,13 +21,13 @@ class Main(App):
 
     network: NetworkManager
     me : Me
-    SCREENS = {"home": Home(), "settings": Settings()}  # noqa: RUF012
+    SCREENS = {"home": Home(), "settings": Settings(), "game": GameScreen()}  # noqa: RUF012
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
 
 
     def on_mount(self) -> None:
-        self.push_screen("home")
+        self.push_screen("game")
 
     def trigger_error(self: Main,message: str):
         #TODO: do an error scree

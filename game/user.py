@@ -108,11 +108,11 @@ class Me:
         """Runs the user's turn."""
 
         game_id = self.player.game.game_id
-        player_id = self.player.player_id
+        token = self.ui_app.me.token
 
         # 1 check if the user can draw and if so grab a card
         if can_draw:
-            card_res  = await self.ui_app.network.draw_card(game_id, player_id)
+            card_res  = await self.ui_app.network.draw_card(game_id, token)
             if card_res.successful:
                 self.hand = card_res.value
             # TODO ERROR check this
@@ -120,7 +120,7 @@ class Me:
 
 
         # 2 prompt for moving spaces
-        space_res = await self.ui_app.network.get_moves(game_id, player_id)
+        space_res = await self.ui_app.network.get_moves(game_id, token)
         if not space_res.successful:
             # TODO server probably down
             pass
@@ -130,7 +130,7 @@ class Me:
         spaces = self.ui_app.decision 
 
 
-        activities = await self.ui_app.network.move(game_id, player_id, spaces)
+        activities = await self.ui_app.network.move(game_id, token, spaces)
         if not activities.successful:
             pass
 
@@ -144,10 +144,14 @@ class Me:
         await self.ui_app.decision_made.clear()
         activity_id = self.ui_app.decision 
 
-        activity_results = self.network.do_action(game_id,player_id, activity_id)
+        activity_results = await self.ui_app.network.do_action(game_id, token, activity_id)
 
+        if not activity_results.successful:
+            pass
 
         # 4 end turn
-        
+        await self.ui_app.decision_made.wait()
+        await self.ui_app.decision_made.clear()
+        await self.ui_app.network.end_turn()
 
 

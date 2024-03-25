@@ -66,17 +66,20 @@ class NetworkManager(ApplicationSession):
     async def valid_token(self: NetworkManager,token:str) -> Result:
         return await self.call_function("com.not_games.valid_user",token)
 
-    async def draw_card(self: NetworkManager, game_id: int, player_id: int) -> Result:
-        return await self.call_function("com.games.draw_card",game_id,player_id)
+    async def draw_card(self: NetworkManager, game_id: int, token: str) -> Result:
+        return await self.call_function("com.games.draw_card",game_id,token)
 
 
 
-    async def get_moves(self: NetworkManager, game_id:int, player_id: int) -> Result:
-        return await self.call_function("com.games.get_moves",game_id,player_id)
+    async def get_moves(self: NetworkManager, game_id:int, token:str) -> Result:
+        return await self.call_function("com.games.get_moves",game_id,token)
 
 
-    async def move(self: NetworkManager, game_id: int, player_id: int, spaces:int) -> Result:
-        return await self.call_function("com.games.move_spaces", game_id, player_id, spaces)
+    async def move(self: NetworkManager, game_id: int, token:str, spaces:int) -> Result:
+        return await self.call_function("com.games.move_spaces", game_id, token, spaces)
 
-    async def do_action(self: NetworkManager, game_id:int, player_id:int, activity_id: int) -> Result:
-        return await self.call_function("com.games.do_action", game_id, player_id, activity_id)
+    async def do_action(self: NetworkManager, game_id:int, token: str, activity_id: int) -> Result:
+        return await self.call_function("com.games.do_action", game_id, token, activity_id)
+
+    async def end_turn(self: NetworkManager, game_id:int, token: str) -> Result:
+        return await self.call_function("com.games.end_turn", game_id,token)

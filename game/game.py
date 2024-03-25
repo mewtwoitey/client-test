@@ -14,10 +14,6 @@ class Game:
         self.network = network
 
 
-    async def my_turn(self: Game, draw: bool):
-
-        if candraw:
-            await self.network.draw(game_id)
 
 
 

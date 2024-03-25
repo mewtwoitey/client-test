@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 class Player:
     gems: list[str]
+    player_id: int
     game: Game
 
     def __init__(self: Player, nickname: str) -> None:
@@ -19,10 +20,9 @@ class Player:
         self.move_min = 2
         self.move_max = 8
         self.money = 0
-        self.luck = 0.7
+        self.luck = 0.5
 
-    def get_id(self: Player) -> str:
-        return "player_" + self._user.user_id
+
 
 
 class Me:
@@ -103,5 +103,51 @@ class Me:
         await self.set_token(token)
         self.update_file()
         return Result(True)
+
+    async def run_turn(self: Me, can_draw : bool):
+        """Runs the user's turn."""
+
+        game_id = self.player.game.game_id
+        player_id = self.player.player_id
+
+        # 1 check if the user can draw and if so grab a card
+        if can_draw:
+            card_res  = await self.ui_app.network.draw_card(game_id, player_id)
+            if card_res.successful:
+                self.hand = card_res.value
+            # TODO ERROR check this
+                
+
+
+        # 2 prompt for moving spaces
+        space_res = await self.ui_app.network.get_moves(game_id, player_id)
+        if not space_res.successful:
+            # TODO server probably down
+            pass
+        # TODO add to decision tab
+        await self.ui_app.decision_made.wait()
+        await self.ui_app.decision_made.clear()
+        spaces = self.ui_app.decision 
+
+
+        activities = await self.ui_app.network.move(game_id, player_id, spaces)
+        if not activities.successful:
+            pass
+
+        activities = activities.value
+
+
+        # 3 prompt user to choose an activity
+        #TODO add to decision tab
+
+        await self.ui_app.decision_made.wait()
+        await self.ui_app.decision_made.clear()
+        activity_id = self.ui_app.decision 
+
+        activity_results = self.network.do_action(game_id,player_id, activity_id)
+
+
+        # 4 end turn
+        
 
 

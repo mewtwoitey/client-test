@@ -70,3 +70,13 @@ class NetworkManager(ApplicationSession):
         return await self.call_function("com.games.draw_card",game_id,player_id)
 
 
+
+    async def get_moves(self: NetworkManager, game_id:int, player_id: int) -> Result:
+        return await self.call_function("com.games.get_moves",game_id,player_id)
+
+
+    async def move(self: NetworkManager, game_id: int, player_id: int, spaces:int) -> Result:
+        return await self.call_function("com.games.move_spaces", game_id, player_id, spaces)
+
+    async def do_action(self: NetworkManager, game_id:int, player_id:int, activity_id: int) -> Result:
+        return await self.call_function("com.games.do_action", game_id, player_id, activity_id)

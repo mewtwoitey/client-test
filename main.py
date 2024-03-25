@@ -22,6 +22,8 @@ class Main(App):
     network: NetworkManager
     me : Me
     SCREENS = {"home": Home(), "settings": Settings(), "game": GameScreen()}  # noqa: RUF012
+    decision_made = asyncio.Event()
+    decision = None
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
 

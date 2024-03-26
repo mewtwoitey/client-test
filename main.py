@@ -36,6 +36,7 @@ class Main(App):
         pass
 
 
+
     async def on_load(self) -> None:
 
         #start the networking on the load

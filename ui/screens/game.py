@@ -33,7 +33,7 @@ class GameScreen(Screen):
                             yield PlayerList(id="player_list_4")
 
                             #current phase
-                            yield Phase()
+                            yield Phase(id="phase_text")
 
 
                             #surrendering button
@@ -46,10 +46,10 @@ class GameScreen(Screen):
 
             with TabPane("Statistics"):
                     with Container(id = "stats_cont"):
-                            yield PlayerListStats()
-                            yield PlayerListStats()
-                            yield PlayerListStats()
-                            yield PlayerListStats()
+                            yield PlayerListStats(id = "player_list_stats_1")
+                            yield PlayerListStats(id = "player_list_stats_2")
+                            yield PlayerListStats(id = "player_list_stats_3")
+                            yield PlayerListStats(id = "player_list_stats_4")
 
             with TabPane("Decision"):
                 with Container(classes = "vertical_cont"):
@@ -59,3 +59,9 @@ class GameScreen(Screen):
                 with Container(classes="vertical_cont"):
                     yield Button("Play Card", id = "play_card_button")
                     yield Button("Take Decision", id = "decision_button")
+
+
+    def log_event(self, text: str):
+        log  = self.query_one(RichLog)
+
+        log.write(text)

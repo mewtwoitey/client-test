@@ -19,10 +19,61 @@ class Player:
         self.draw_chance = 0.33
         self.move_min = 2
         self.move_max = 8
-        self.money = 0
         self.luck = 0.5
+        self.priority = 100
+        self.cash = 0
+        self.position = 0
+        self.screen_pos = -1
+
+    def set_nick(self: Player, nick:str) -> None:
+        self.nick = nick
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").nickname = nick
+        game_screen.query_one(f"#player_list_{self.screen_pos}").nickname = nick
 
 
+    def set_position(self: Player, position: int) -> None:
+        self.position = position
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").pos = position
+        game_screen.query_one(f"#player_list_{self.screen_pos}").pos = position
+
+
+    def set_screen_pos(self: Player, screen_position: int) -> None:
+        self.screen_pos = screen_position
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").player_num = screen_position
+        game_screen.query_one(f"#player_list_{self.screen_pos}").player_num = screen_position
+
+    def set_draw(self: Player, draw: float) -> None:
+        self.draw_chance = draw
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").draw_chance = draw
+
+    def set_move_min(self: Player, move_min: int) -> None:
+        self.move_min = move_min
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").move_min = move_min
+
+    def set_move_max(self: Player, move_max: int) -> None:
+        self.move_max = move_max
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").move_max = move_max
+
+    def set_money(self: Player, money: float) -> None:
+        self.money = money
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").money = money
+
+    def set_luck(self: Player, luck: float) -> None:
+        self.luck = luck
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").luck = luck
+
+    def set_priority(self: Player, priority: int) -> None:
+        self.priority = priority
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").priority = priority
 
 
 class Me:

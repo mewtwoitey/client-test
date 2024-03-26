@@ -34,6 +34,7 @@ class PlayerListStats(Widget):
     move_max: reactive[int] = reactive(8)
     money: reactive[int] = reactive(0)
     luck: reactive[float] = reactive(0.7)
+    priority: reactive[int] = reactive(100)
 
 
     def render(self: PlayerListStats) -> str:
@@ -43,7 +44,8 @@ Draw Chance: {self.draw_chance!s}
 Minimum Move: {self.move_min!s}
 Maximum Move: {self.move_max!s}
 Money: {self.money!s}
-Luck: {self.luck!s}"""
+Luck: {self.luck!s}
+Priority: {self.priority!s}"""
 
 
 class CardPanel(Widget):

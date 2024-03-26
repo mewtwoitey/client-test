@@ -6,14 +6,17 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Center, Container, Horizontal
 from textual.screen import Screen
-from textual.widgets import Button, Placeholder, TabbedContent, TabPane, RichLog
+from textual.widgets import Button, Placeholder, RichLog, TabbedContent, TabPane
+from textual.widgets.option_list import Option
 
-from ui.custom.widgets.games import PlayerList, PlayerListStats, Phase, CardPanel, DecisionPanel
+from ui.custom.screens.popup import ConfirmationPopup, ListPopup
+from ui.custom.widgets.games import CardPanel, DecisionPanel, Phase, PlayerList, PlayerListStats
 
 
 class GameScreen(Screen):
     CSS_PATH = Path(str(Path.cwd()) + "/ui/css/game.tcss")
-
+    decision_function = None
+    options = []
 
     def compose(self: GameScreen) -> ComposeResult:
         with TabbedContent():
@@ -65,3 +68,52 @@ class GameScreen(Screen):
         log  = self.query_one(RichLog)
 
         log.write(text)
+
+    def clear_decision(self: GameScreen):
+        self.query_one("#decision_button").disabled = True
+        self.query_one("#player_card_button").disabled = True
+
+
+    def decision_moves(self: GameScreen, moves: list[int]):
+        self.query_one("#decision_button").disabled = False
+        self.query_one("#player_card_button").disabled = False
+        self.options = [Option(str(num), id= str(num) ) for num in moves]
+        self.decision_function = self.choose_button_function
+
+
+
+
+    async def choose_button_function(self: GameScreen):
+
+        async def select_option(num):
+            self.app.decision = int(num)
+            await self.app.decision_made.set()
+
+
+        await self.app.push_screen(
+            ListPopup(
+                items=self.options,
+            ),
+            select_option,
+        )
+
+    def decision_activity(self:GameScreen, activities: dict[int,str]):
+        self.options = [Option(name, id= str(id) ) for id, name in activities]
+        self.decision_function = self.choose_button_function
+
+    def decision_end(self:GameScreen):
+        self.decision_function = self.end_button_function
+
+
+    async def end_button_function(self: GameScreen):
+        async def select_option(select: bool) -> None:
+            if select:
+                await self.app.decision_made.set()
+
+        await self.app.push_screen(
+            ConfirmationPopup()
+        )
+
+        #TODO link button
+
+

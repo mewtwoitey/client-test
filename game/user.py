@@ -160,6 +160,7 @@ class Me:
 
         game_id = self.player.game.game_id
         token = self.ui_app.me.token
+        game_screen = self.ui_app.get_screen("game")
 
         # 1 check if the user can draw and if so grab a card
         if can_draw:
@@ -175,7 +176,7 @@ class Me:
         if not space_res.successful:
             # TODO server probably down
             pass
-        # TODO add to decision tab
+        game_screen.decision_moves(space_res.value)
         await self.ui_app.decision_made.wait()
         await self.ui_app.decision_made.clear()
         spaces = self.ui_app.decision 
@@ -189,11 +190,11 @@ class Me:
 
 
         # 3 prompt user to choose an activity
-        #TODO add to decision tab
+        game_screen.decision_activity(space_res.value)
 
         await self.ui_app.decision_made.wait()
         await self.ui_app.decision_made.clear()
-        activity_id = self.ui_app.decision 
+        activity_id = self.ui_app.decision
 
         activity_results = await self.ui_app.network.do_action(game_id, token, activity_id)
 
@@ -204,5 +205,6 @@ class Me:
         await self.ui_app.decision_made.wait()
         await self.ui_app.decision_made.clear()
         await self.ui_app.network.end_turn()
+        game_screen.clear_decision()
 
 

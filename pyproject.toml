@@ -13,7 +13,7 @@ autobahn = {extras = ["asyncio"], version = "^23.6.2"}
 pillow = "10.2.0"
 textual-dev = "^1.5.1"
 ujson = "^5.9.0"
-pyperclip = "^1.8.2"
+numpy = "^1.26.4"
 
 [tool.poetry.group.dev.dependencies]
 ruff = { version= "^0.1.14"}

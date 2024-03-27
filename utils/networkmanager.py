@@ -66,7 +66,7 @@ class NetworkManager(ApplicationSession):
                     return
 
                 game_screen.log_event("The player {} has been disconnected.")
-            
+        
 
             case "PHASE_CHANGE":
                 phase = from_json["phase"]
@@ -98,7 +98,7 @@ class NetworkManager(ApplicationSession):
                 player = self.me.player.game.get_player(player_id)
 
 
-                # set all the layer's stats
+                # set all the player's stats
                 player.set_draw(from_json["draw"])
                 player.set_money(from_json["cash"])
                 player.set_luck(from_json["luck"])
@@ -108,6 +108,10 @@ class NetworkManager(ApplicationSession):
 
             case "DO_ACTION":
                 game_screen.log_event(from_json["text"])
+
+
+            case "BOARD_SYNC":
+                game.board.json_convert(from_json["board"])
 
 
 
@@ -122,9 +126,8 @@ class NetworkManager(ApplicationSession):
         res_object = Result.from_json(res)
         return res_object
 
-    async def pull_card(self: NetworkManager, theme:str):
-        result = await self.call_function("com.not_games.pull_card",theme,self.ui_app.me.token)
-        return result
+    async def pull_card(self: NetworkManager, theme:str) -> Result:
+        return await self.call_function("com.not_games.pull_card",theme,self.ui_app.me.token)
 
     async def create_user(self: NetworkManager) -> Result:
         return await self.call_function("com.not_games.create_user")

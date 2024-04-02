@@ -82,7 +82,7 @@ class Me:
         self.decks: dict[str, dict[int, int]] = {}
         self.cards: dict[int, int] = {}
         self.player: Player = None
-        self.hand: int = None
+        self.hand: int = -1
         self.ui_app: Main = ui_app
 
     def update_file(self: Me) -> Result:
@@ -207,4 +207,5 @@ class Me:
         await self.ui_app.network.end_turn()
         game_screen.clear_decision()
 
-
+    async def play_card(self: Me):
+        

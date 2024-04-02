@@ -114,6 +114,9 @@ class NetworkManager(ApplicationSession):
                 game.board.json_convert(from_json["board"])
 
 
+            case "CARD_PLAYED":
+
+
 
 
 

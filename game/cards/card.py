@@ -50,39 +50,39 @@ class CardManager:
 
     def __init__(self:CardManager,ui: Main) -> None:
         self.card_dict = {}
+        self.ui = ui
 
 
     def call_card(self:CardManager,card_id: int,player: Player) -> Result:
 
+        if card_id not in self.card_dict:
+            return Result(False, "Card not found.")
+        card_object = self.card_dict[card_id]
 
-    def pull_card(self: CardManager,theme:Theme) -> Card:
-        rare = random.choices(self.rarities,cum_weights=self.chances)[0]
-        choose_from = self.card_list[theme][rare]
-        return random.choice(choose_from)
+        can_run = card_object.check(player)
+
+        if not can_run:
+            return Result(False, "The requirements have not been met")
+
+
+
 
     def setup_cards(self: CardManager) -> Result:
         #get all the folders that contain cards
         themes = [t.name.lower() for t in Theme]
-        basedir = str(Path.cwd()) + "/src/cards/"
+        basedir = str(Path.cwd()) + "/game/cards/"
 
         #go over the folders
-        for theme in themes:
-            #add nessary lists to cache
-            theme_enum = convert_enum_value(Theme,theme)
-            self.card_list[theme_enum] = {key:[] for key in Rarity}
 
-            try:
+
+
+        try:
+            for theme in themes:
                 for card_file in os.listdir(basedir+theme+"/"):
-
                     if card_file.endswith("c.py"):
                         card_class = importlib.import_module(f"src.cards.{theme}.{card_file[:-3]}").exports
-                        rarer = card_class.rarity
-
-                        self.card_list[theme_enum][rarer].append(card_class)
                         self.card_dict[card_class.card_id]=card_class
 
-            except FileNotFoundError:
-                logging.critical("A card file is missing, please ensure that all theme directories are there")
-                critical()
-                return Result(False)
-        return Result(True,"")
+        except FileNotFoundError:
+            print("Some card files are missing!")
+            os.exit(-1)

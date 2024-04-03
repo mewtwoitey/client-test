@@ -14,7 +14,7 @@ from ui.screens.settings import Settings
 from ui.screens.game import GameScreen
 from utils.networkmanager import NetworkManager
 
-
+from game.cards.card import CardManager
 
 
 class Main(App):
@@ -26,6 +26,8 @@ class Main(App):
     decision = None
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
+        self.card_manager = CardManager(self)
+        self.card_manager.setup_cards()
 
 
     def on_mount(self) -> None:

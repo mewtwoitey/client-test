@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Any
 
@@ -56,3 +58,23 @@ class ListPopup(PopupScreen):
     def chosen(self:"ListPopup", details) -> None:
         self.dismiss(details.option_id)
 
+
+class ErrorPopup(PopupScreen):
+    #screen to display errors
+
+    def __init__(self: PopupScreen, name: str | None = None, id: str | None = None, classes: str | None = None, err_msg: str = "An error has occured") -> None:
+        super().__init__(name, id, classes)
+        self.err_msg = err_msg
+
+
+    def compose(self) -> ComposeResult:
+        with Container(id="main_content"):
+            with Container(id="error_display"):
+                yield Label(f"ERROR: {self.err_msg}")
+                with Container(id="error_buttons"):
+                    yield Button("Dismiss", id="dismiss_button")
+                    yield Button("Leave Game", id="leave_button")
+
+
+    @on(Button.Pressed)
+    def button_pressed(self: ErrorPopup, )

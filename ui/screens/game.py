@@ -121,7 +121,9 @@ class GameScreen(Screen):
 
     @on(Button.Pressed, "#player_card_button")
     async def card_button_pressed(self:GameScreen):
-        if self.app.network.me.hand == -1:
-            self.query_one("#player_card_button").disabled = True
+        await self.app.me.play_card()
+        
+
+
 
 

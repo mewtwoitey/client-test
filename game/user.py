@@ -207,5 +207,17 @@ class Me:
         await self.ui_app.network.end_turn()
         game_screen.clear_decision()
 
-    async def play_card(self: Me):
+    async def play_card(self: Me) -> Result:
+        if self.hand == -1:
+            # there is no card in the player's hand
+            self.ui_app.trigger_error("There is no card that can be played! Report this to the developer.")
+            return
+
+        can_be_played = self.ui_app.card_manager.call_card(self.hand, self.player)
+
+
+        if not can_be_played.successful:
+            self.ui_app.trigger_error(can_be_played.error_msg)
+
         
+        await self.ui_app.network.play_card()

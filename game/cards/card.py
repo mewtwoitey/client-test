@@ -64,6 +64,8 @@ class CardManager:
         if not can_run:
             return Result(False, "The requirements have not been met")
 
+        return Result(True)
+
 
 
 

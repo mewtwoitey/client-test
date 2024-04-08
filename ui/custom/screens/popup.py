@@ -7,7 +7,7 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.screen import Screen
-from textual.widgets import Button, Label, OptionList
+from textual.widgets import Button, Label, OptionList, Input
 from textual.widgets.option_list import Option
 
 
@@ -69,12 +69,37 @@ class ErrorPopup(PopupScreen):
 
     def compose(self) -> ComposeResult:
         with Container(id="main_content"):
-            with Container(id="error_display"):
-                yield Label(f"ERROR: {self.err_msg}")
-                with Container(id="error_buttons"):
-                    yield Button("Dismiss", id="dismiss_button")
-                    yield Button("Leave Game", id="leave_button")
+            yield Label(f"ERROR: {self.err_msg}")
+            yield Button("Dismiss", id="dismiss_button", variant="warning")
+            yield Button("Leave Game", id="leave_button", variant="warning")
 
 
     @on(Button.Pressed)
-    def button_pressed(self: ErrorPopup, )
+    async def button_pressed(self: ErrorPopup, details):
+        match details.button.id:
+            case "dismiss_button":
+                self.dismiss()
+
+            case "leave_button":
+                await self.app.action_quit()
+
+class TextPopup(PopupScreen):
+    def __init__(self: PopupScreen, name: str | None = None, id: str | None = None, classes: str | None = None, text: str = "Enter string:", max_length:int = 10, default="none") -> None:
+        super().__init__(name, id, classes)
+        self.max_length = max_length
+        self.text = text
+        self.default = default
+
+
+    def compose(self: TextPopup) -> ComposeResult:
+        with Container(id="main_content"):
+            yield Input(placeholder=self.text,max_length=self.max_length,validate_on=["submitted"])
+    
+
+    @on(Input.Submitted)
+    def submit_text(self:TextPopup, details):
+        if not details.value:
+            self.dismiss(self.default)
+
+
+        self.dismiss(details.value)

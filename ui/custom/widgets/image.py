@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -86,13 +88,13 @@ class Board_Image(Widget):
 
 
 
-        image_onject = Imgpil.fromarray(array,mode="RGBA")
+        image_object = Imgpil.fromarray(array,mode="RGBA")
         # resize the image
         screen_size = self.container_size # get the screen size
         target_height = screen_size.height 
         #keep the height and resize the other bits 
         target_width = math.floor(self.aspect*target_height)
-        resized = self.image_object.resize((target_width,target_height), Imgpil.Resampling.NEAREST)
+        resized = image_object.resize((target_width,target_height), Imgpil.Resampling.NEAREST)
 
 
         return Pixels.from_image(resized, renderer=FullcellRenderer)

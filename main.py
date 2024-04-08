@@ -12,6 +12,8 @@ from game.user import Me
 from ui.screens.home import Home
 from ui.screens.settings import Settings
 from ui.screens.game import GameScreen
+from ui.screens.game_searching import SearchScreen
+from ui.custom.screens.popup import ErrorPopup
 from utils.networkmanager import NetworkManager
 
 from game.cards.card import CardManager
@@ -21,21 +23,23 @@ class Main(App):
 
     network: NetworkManager
     me : Me
-    SCREENS = {"home": Home(), "settings": Settings(), "game": GameScreen()}  # noqa: RUF012
+    SCREENS = {"home": Home(), "settings": Settings(), "game": GameScreen(), "searching": SearchScreen()}  # noqa: RUF012
     decision_made = asyncio.Event()
     decision = None
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
         self.card_manager = CardManager(self)
-        self.card_manager.setup_cards()
+        #self.card_manager.setup_cards()
 
 
     def on_mount(self) -> None:
-        self.push_screen("game")
+        self.push_screen("searching")
 
     def trigger_error(self: Main,message: str):
-        #TODO: do an error scree
-        pass
+        
+        self.app.push_screen(
+            ErrorPopup(err_msg=message),
+        )
 
 
 

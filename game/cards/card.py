@@ -86,5 +86,4 @@ class CardManager:
                         self.card_dict[card_class.card_id]=card_class
 
         except FileNotFoundError:
-            print("Some card files are missing!")
-            os.exit(-1)
+            self.ui.trigger_error("Card files not found")

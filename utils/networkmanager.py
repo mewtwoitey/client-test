@@ -160,3 +160,10 @@ class NetworkManager(ApplicationSession):
 
     async def play_card(self: NetworkManager, game_id:int, token:str, card_id:  int):
         return await self.call_function("com.games.play_card", game_id, token, card_id)
+    
+
+    async def get_games(self: NetworkManager, token:str):
+        return await self.call_function("com.games.get_games", token)
+    
+    async def join_game(self:NetworkManager, token: str, game_id:int):
+        return await self.call_function("com.games.join_game", token, game_id)

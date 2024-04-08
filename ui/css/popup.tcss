@@ -37,3 +37,34 @@ ListPopup OptionList{
     width:20;
 }
 
+ErrorPopup #main_content {
+    width: 40%;
+    height:40%;
+    align: center middle;
+    layout: grid;
+    grid-size: 2 2; 
+    border: heavy $error-lighten-1;
+}
+
+ErrorPopup Button {
+    width: 20%;
+    column-span: 1;
+}
+
+ErrorPopup Label {
+    column-span: 2;
+    text-align: center;
+    text-style: bold;
+    color: $error-lighten-1;
+}
+
+TextPopup #main_content{
+    width: 40%;
+    align: center middle;
+    height: 20%;
+    border: heavy $accent;
+}
+
+TextPopup Input {
+    border: none;
+}

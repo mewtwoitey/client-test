@@ -7,6 +7,7 @@ from textual.screen import Screen
 from textual.widgets import Button, Placeholder
 
 from ui.custom.widgets.image import Image
+from ui.custom.screens.popup import TextPopup
 
 
 class Home(Screen):
@@ -46,3 +47,21 @@ class Home(Screen):
     @on(Button.Pressed,"#settings_button")
     def settings_button(self:"Home") -> None:
         self.app.push_screen("settings")
+
+
+    @on(Button.Pressed,"#pull_button")
+    def pull_button(self:"Home") -> None:
+        self.app.trigger_error("This is not implemented yet")
+
+
+    @on(Button.Pressed, "#play_button")
+    def player_button(self):
+
+
+        def change_text(text: str):
+            self.query_one("#play_button").text = text
+
+        self.app.push_screen(
+            TextPopup(text="test"),
+            change_text,
+        )

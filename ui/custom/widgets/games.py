@@ -35,6 +35,7 @@ class PlayerListStats(Widget):
     money: reactive[int] = reactive(0)
     luck: reactive[float] = reactive(0.7)
     priority: reactive[int] = reactive(100)
+    gems: reactive[int] = reactive(0)
 
 
     def render(self: PlayerListStats) -> str:

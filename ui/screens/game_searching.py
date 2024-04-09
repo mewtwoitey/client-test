@@ -9,7 +9,10 @@ from textual.widgets import Button, OptionList
 from textual.widgets.option_list import Option
 from textual.widget import Widget
 from ui.custom.screens.subscreen import SubScreen
+from ui.custom.screens.popup import TextPopup
 from textual.reactive import reactive
+
+from utils.useful import Result
 
 class GameInfo(Widget):
     player_names : reactive[list] = reactive([])
@@ -57,6 +60,7 @@ class SearchScreen(SubScreen):
         options_list.add_options(*options)
     
 
+    @on(OptionList.OptionSelected)
     @on(OptionList.OptionHighlighted)
     def game_higlighted(self, details):
         game_id = details.option_id
@@ -64,12 +68,27 @@ class SearchScreen(SubScreen):
 
         self.query_one(GameInfo).get_from_dict(game_info)
 
-    @on(OptionList.OptionSelected)
+    @on(Button.Pressed, "#join_game_button")
     async def join_game(self, details):
-        game_id = details.option_id
+        game_list = self.query_one(OptionList)
+        higlight_index = game_list.highlighted
+        game_id = game_list.get_option_at_index(higlight_index)
 
-        await self.app.network.join_game(self.app.me.token, game_id)
-        #TODO ERRORS here
+
+
+
+        nickname = await self.app.push_screen(TextPopup(text="Enter nickname", default="No Name"))
+
+        await self.app.me.join_game(game_id, nickname)
+
+
+    @on(Button.Pressed,"#create_game_button")
+    async def create_game(self, details):
+        game_name = await self.app.push_screen(TextPopup(text="Enter game name", default="No Name"))
+
+        nickname = await self.app.push_screen(TextPopup(text="Enter nickname", default="No Name"))
+
+        self.app.me.create_game(game_name,nickname)
 
 
 

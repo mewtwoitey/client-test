@@ -38,7 +38,7 @@ class GameJoinScreen(Screen):
             yield PlayerName(id="player_name_2",pos=2)
             yield PlayerName(id="player_name_3",pos=3)
             yield PlayerName(id="player_name_4",pos=4)
-        yield ProgressBar(total=4,id="player_load_bar")
+        yield ProgressBar(total=4,id="player_load_bar",show_eta=False)
 
 
     def player_add(self: GameJoinScreen, player_name:str):

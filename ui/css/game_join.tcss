@@ -1,0 +1,21 @@
+
+GameJoinScreen {
+    align: center middle;
+
+}
+GameJoinScreen #player_names_list {
+    layout: grid;
+    grid-size: 2 2;
+    width: 80%;
+    
+    height: 40%;
+}
+GameJoinScreen PlayerName {
+    
+    text-align: center;
+    
+}
+
+GameJoinScreen #player_load_bar  {
+    
+}

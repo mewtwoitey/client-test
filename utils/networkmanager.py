@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, List
 
+from autobahn.wamp.request import Subscription
+from autobahn.wamp.types import SubscribeOptions
 import ujson
 from autobahn.asyncio.wamp import ApplicationRunner, ApplicationSession
 
@@ -123,6 +125,9 @@ class NetworkManager(ApplicationSession):
                 game_join.add_player(from_json["nickname"])
                 game.add_player(from_json)
 
+            case "GAME_START":
+                pass
+
 
 
 
@@ -162,14 +167,25 @@ class NetworkManager(ApplicationSession):
 
     async def end_turn(self: NetworkManager, game_id:int, token: str) -> Result:
         return await self.call_function("com.games.end_turn", game_id,token)
-    
 
-    async def play_card(self: NetworkManager, game_id:int, token:str, card_id:  int):
+
+    async def play_card(self: NetworkManager, game_id:int, token:str, card_id:  int)-> Result:
         return await self.call_function("com.games.play_card", game_id, token, card_id)
+
+
+    async def get_games(self: NetworkManager, token:str)-> Result:
+        return await self.call_function("com.games.get_games", token)
+
+    async def join_game(self: NetworkManager, token: str, game_id:int)-> Result:
+        return await self.call_function("com.games.join_game", token, game_id)
+
+    async def create_game(self: NetworkManager,token:str, game_name:str)-> Result:
+        return await self.call_function("com.game.create_game", token, game_name)
     
 
-    async def get_games(self: NetworkManager, token:str):
-        return await self.call_function("com.games.get_games", token)
+    async def subscribe_to_game(self: NetworkManager, game_id:int):
+        self.subscribe(self.process_broadcast,f"games.{game_id}.events")
+
+    async def get_players(self: NetworkManager,token:str, game_id: int)-> Result:
+        return await self.call_function("com.game.get_players", token, game_id)
     
-    async def join_game(self:NetworkManager, token: str, game_id:int):
-        return await self.call_function("com.games.join_game", token, game_id)

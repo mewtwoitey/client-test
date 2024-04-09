@@ -113,6 +113,7 @@ class Me:
         valid = res.successful
         if valid:
             self.token = token
+            self.player_id = int(token.split("{}")[0])
         else:
             self.ui_app.trigger_error(res.error_msg)
 
@@ -224,3 +225,32 @@ class Me:
 
         
         await self.ui_app.network.play_card()
+
+    async def join_game(self: Me, game_id:int, nickname: str):
+        res = await self.ui_app.network.join_game(self.ui_app.me.token, game_id)
+
+        if not res.successful:
+            self.ui_app.trigger_error(res.error_msg)
+        
+        game_object = Game(self.ui_app.network, game_id)
+        self.player = Player(nickname=nickname, player_id=self.player_id,game_object=game_object)
+
+        self.ui_app.network.subscribe_to_game(game_id)
+
+        await self.ui_app.push_screen("game_join")
+
+        game_join_screen = self.ui_app.get_screen("game_join")
+
+        players  = await self.ui_app.network.get_players()
+
+        for player_object in players:
+            game_join_screen.player_add(player_object["nickname"])
+            self.player.game.add_player(player_object)
+
+    async def create_game(self:Me, game_name: str, nickname: str):
+        game_id = await self.ui_app.network.create_game(self.token,game_name).value
+        #TODO error checking
+
+        await self.join_game(game_id, nickname=nickname)
+
+

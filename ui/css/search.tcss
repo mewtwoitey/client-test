@@ -1,12 +1,11 @@
 SearchScreen #content_cont {
     layout: grid;
     grid-size: 5 1;
-    border:green;
-    
+
 }
 
 SearchScreen #left_side_container {
-    border: green;
+
     layout: grid;
     grid-size: 1;
     column-span: 2;

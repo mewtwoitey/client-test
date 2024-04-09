@@ -39,6 +39,8 @@ class Game:
                                 game_object=self)
         self.players.append(player_object)
 
+    def start_game(self: Game):
+        self.network.ui_app.push_screen("game")
 
 class Board:
     def __init__(self: Board,game: Game,length: int=20) -> None:

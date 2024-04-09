@@ -25,11 +25,12 @@ class GameInfo(Widget):
 
 
 class SearchScreen(SubScreen):
-    CSS_PATH = Path(str(Path.cwd()) + "/ui/css/search.tcss")
+    
 
     def __init__(self: SubScreen, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
         self.game_cache = {}
+        self.css_path = [*self.CSS_PATH, Path(str(Path.cwd()) + "/ui/css/search.tcss")]
 
 
     def compose(self) -> ComposeResult:

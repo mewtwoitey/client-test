@@ -9,13 +9,14 @@ if TYPE_CHECKING:
 
 
 class Game:
-    current_turn : int
-    game_id: int
-    players: list[Player]
 
-    def __init__(self, network: NetworkManager) -> None:
+
+    def __init__(self, network: NetworkManager, game_id: int) -> None:
         self.network = network
         self.board = Board(self)
+        self.current_turn : int = 0
+        self.game_id: int = game_id
+        self.players: list[Player] = []
 
     def get_player(self: Game,player_id:int) -> Player | None:
         try:
@@ -31,6 +32,12 @@ class Game:
     def next_turn(self: Game, player_nick: str):
         game_screen = self.network.ui_app.get_screen("game")
         game_screen.query_one("phase_text").player_nick = player_nick
+
+    def add_player(self: Game, info: dict) -> None:
+        player_object = Player(nickname=info["nickname"],
+                                player_id=info["player_id"],
+                                game_object=self)
+        self.players.append(player_object)
 
 
 class Board:

@@ -14,7 +14,7 @@ class Player:
     player_id: int
     game: Game
 
-    def __init__(self: Player, nickname: str) -> None:
+    def __init__(self: Player, nickname: str, player_id: int,game_object :Game) -> None:
         self.nick = nickname
         self.draw_chance = 0.33
         self.move_min = 2
@@ -24,6 +24,9 @@ class Player:
         self.cash = 0
         self.position = 0
         self.screen_pos = -1
+        self.gems: list[int] = []
+        self.player_id: int = player_id
+        self.game: Game =game_object
 
     def set_nick(self: Player, nick:str) -> None:
         self.nick = nick

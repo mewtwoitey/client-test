@@ -11,7 +11,7 @@ SearchScreen #left_side_container {
     grid-size: 1;
     column-span: 2;
 }
-SearchScreen #right_side_container {
+SearchScreen #right_side_content {
     column-span: 3;
     
 }

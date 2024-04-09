@@ -118,6 +118,12 @@ class NetworkManager(ApplicationSession):
                 pass
 
 
+            case "PLAYER_JOIN":
+                game_join = self.ui_app.get_screen("game_join")
+                game_join.add_player(from_json["nickname"])
+                game.add_player(from_json)
+
+
 
 
 

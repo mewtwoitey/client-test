@@ -2,15 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List
 
-from autobahn.wamp.request import Subscription
-from autobahn.wamp.types import SubscribeOptions
 import ujson
 from autobahn.asyncio.wamp import ApplicationRunner, ApplicationSession
+from autobahn.wamp.request import Subscription
+from autobahn.wamp.types import SubscribeOptions
 
+from game.me import Me
 from utils.useful import Result
-from game.user import Me
-
-
 
 if TYPE_CHECKING:
     from autobahn.wamp.types import ComponentConfig
@@ -176,16 +174,16 @@ class NetworkManager(ApplicationSession):
     async def get_games(self: NetworkManager, token:str)-> Result:
         return await self.call_function("com.games.get_games", token)
 
-    async def join_game(self: NetworkManager, token: str, game_id:int)-> Result:
-        return await self.call_function("com.games.join_game", token, game_id)
+    async def join_game(self: NetworkManager, token: str, game_id:int,nickname:str)-> Result:
+        return await self.call_function("com.games.join_game", token, game_id,nickname)
 
     async def create_game(self: NetworkManager,token:str, game_name:str)-> Result:
-        return await self.call_function("com.game.create_game", token, game_name)
+        return await self.call_function("com.games.create_game", token, game_name)
     
 
     async def subscribe_to_game(self: NetworkManager, game_id:int):
         self.subscribe(self.process_broadcast,f"games.{game_id}.events")
 
     async def get_players(self: NetworkManager,token:str, game_id: int)-> Result:
-        return await self.call_function("com.game.get_players", token, game_id)
+        return await self.call_function("com.games.get_players", token, game_id)
     

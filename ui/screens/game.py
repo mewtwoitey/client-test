@@ -121,7 +121,7 @@ class GameScreen(Screen):
 
     @on(Button.Pressed, "#player_card_button")
     async def card_button_pressed(self:GameScreen):
-        await self.app.me.play_card()
+        await self.app.network.me.play_card()
         
 
 

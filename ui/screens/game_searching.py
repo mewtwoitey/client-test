@@ -11,6 +11,7 @@ from textual.widget import Widget
 from ui.custom.screens.subscreen import SubScreen
 from ui.custom.screens.popup import TextPopup
 from textual.reactive import reactive
+from textual.events import Focus
 
 from utils.useful import Result
 
@@ -44,21 +45,26 @@ class SearchScreen(SubScreen):
                 with Container(id="buttons_container"):
                     yield Button("Create Game", id="create_game_button")
                     yield Button("Join Highlighted", id="join_game_button")
+                    yield Button("Refresh", id="refresh_games")
                 yield GameInfo()
             with Container(id = "right_side_content"):
                 yield OptionList(id="games_list")
     
 
     async def populate(self):
-        games = await self.app.network.get_games(self.app.me.token).value
+        games = await self.app.network.get_games(self.app.network.me.token)
+        games = games.value
         options = []
         for game in games:
             self.game_cache[game["game_id"]] = game
             options.append(Option(game["game_name"],id=game["game_id"]))
         options_list = self.query_one("#games_list")
         options_list.clear_options()
-        options_list.add_options(*options)
+        options_list.add_options(options)
     
+
+
+
 
     @on(OptionList.OptionSelected)
     @on(OptionList.OptionHighlighted)
@@ -69,7 +75,15 @@ class SearchScreen(SubScreen):
         self.query_one(GameInfo).get_from_dict(game_info)
 
     @on(Button.Pressed, "#join_game_button")
-    async def join_game(self, details):
+    async def run_join_game(self):
+        self.run_worker(self.join_game())
+
+
+    @on(Button.Pressed, "#refresh_games")
+    async def run_refresh_game(self):
+        await self.populate()
+
+    async def join_game(self):
         game_list = self.query_one(OptionList)
         higlight_index = game_list.highlighted
         game_id = game_list.get_option_at_index(higlight_index)
@@ -77,18 +91,22 @@ class SearchScreen(SubScreen):
 
 
 
-        nickname = await self.app.push_screen(TextPopup(text="Enter nickname", default="No Name"))
+        nickname = await self.app.push_screen_wait(TextPopup(text="Enter nickname", default="No Name"))
 
-        await self.app.me.join_game(game_id, nickname)
+        await self.app.network.me.join_game(game_id.id, nickname, game_id.prompt)
 
 
     @on(Button.Pressed,"#create_game_button")
-    async def create_game(self, details):
+    async def run_create_game(self,details):
+        self.run_worker(self.create_game())
+
+
+    async def create_game(self):
         game_name = await self.app.push_screen_wait(TextPopup(text="Enter game name", default="No Name"))
 
         nickname = await self.app.push_screen_wait(TextPopup(text="Enter nickname", default="No Name"))
 
-        await self.app.me.create_game(game_name,nickname)
+        await self.app.network.me.create_game(game_name,nickname)
 
 
 

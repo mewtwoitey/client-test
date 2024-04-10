@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import importlib
-import logging
 import os
-import random
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -11,7 +9,7 @@ from typing import TYPE_CHECKING
 from utils.useful import Result
 
 if TYPE_CHECKING:
-    from game.user import Me,Player
+    from game.user import Player
     from main import Main
 
 Rarity = Enum("Rarity", ["COMMON", "MEDIUM", "HIGH"])

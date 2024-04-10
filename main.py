@@ -1,37 +1,37 @@
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING
 
-import asyncio
 #from collections.abc import Iterable
 #from os import environ
 from autobahn.asyncio.wamp import ApplicationRunner
 from textual.app import App
 
-from game.user import Me
+from game.cards.card import CardManager
+from ui.custom.screens.popup import ErrorPopup
+from ui.screens.game import GameScreen
+from ui.screens.game_join import GameJoinScreen
+from ui.screens.game_searching import SearchScreen
 from ui.screens.home import Home
 from ui.screens.settings import Settings
-from ui.screens.game import GameScreen
-from ui.screens.game_searching import SearchScreen
-from ui.screens.game_join import GameJoinScreen
-from ui.custom.screens.popup import ErrorPopup
 from utils.networkmanager import NetworkManager
 
-from game.cards.card import CardManager
+if TYPE_CHECKING:
+    from game.me import Me
 
 
 class Main(App):
 
     network: NetworkManager
     me : Me
-    SCREENS = {"home": Home(), "settings": Settings(), "game": GameScreen(), "searching": SearchScreen(), "join_screen": GameJoinScreen()}  # noqa: RUF012
+    SCREENS = {"home": Home(), "settings": Settings(), "game": GameScreen(), "searching": SearchScreen(), "game_join": GameJoinScreen()}  # noqa: RUF012
     decision_made = asyncio.Event()
     decision = None
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
         self.card_manager = CardManager(self)
         #self.card_manager.setup_cards()
-        self.me = Me(self)
 
 
     def on_mount(self) -> None:

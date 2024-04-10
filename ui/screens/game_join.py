@@ -10,6 +10,7 @@ from textual.widgets import Label, ProgressBar
 from textual.widget import Widget
 from textual.reactive import reactive
 
+
 class PlayerName(Widget):
     """class used to make the player list on the board screen."""
 
@@ -41,12 +42,16 @@ class GameJoinScreen(Screen):
         yield ProgressBar(total=4,id="player_load_bar",show_eta=False)
 
 
-    def player_add(self: GameJoinScreen, player_name:str):
-        self.query_one(f"player_name_{self.current_pos}").nickname = player_name
 
-        self.query_one("player_load_bar").update(self.current_pos)
+    def player_add(self: GameJoinScreen, player_name:str):
+        self.query_one(f"#player_name_{self.current_pos}").nickname = player_name
+
+        self.query_one("#player_load_bar").progress = self.current_pos
 
         self.current_pos += 1
+
+    def set_game_name(self: GameJoinScreen, game_name :str):
+        self.query_one("#game_name_label").label = game_name
 
 
 

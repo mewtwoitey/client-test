@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 import ujson
+
+from game.user import Player
 
 if TYPE_CHECKING:
     from utils.networkmanager import NetworkManager
-    from game.user import Player
 
 
 class Game:

@@ -248,7 +248,8 @@ class Me:
             self.player.game.add_player(player_object)
 
     async def create_game(self:Me, game_name: str, nickname: str):
-        game_id = await self.ui_app.network.create_game(self.token,game_name).value
+        game_res = await self.ui_app.network.create_game(self.token,game_name)
+        game_id = game_res.value
         #TODO error checking
 
         await self.join_game(game_id, nickname=nickname)

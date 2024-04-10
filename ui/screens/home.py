@@ -56,12 +56,4 @@ class Home(Screen):
 
     @on(Button.Pressed, "#play_button")
     def player_button(self):
-
-
-        def change_text(text: str):
-            self.query_one("#play_button").text = text
-
-        self.app.push_screen(
-            TextPopup(text="test"),
-            change_text,
-        )
+        self.app.push_screen("searching")

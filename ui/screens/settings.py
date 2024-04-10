@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import pyperclip
+
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container

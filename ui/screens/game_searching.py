@@ -84,11 +84,11 @@ class SearchScreen(SubScreen):
 
     @on(Button.Pressed,"#create_game_button")
     async def create_game(self, details):
-        game_name = await self.app.push_screen(TextPopup(text="Enter game name", default="No Name"))
+        game_name = await self.app.push_screen_wait(TextPopup(text="Enter game name", default="No Name"))
 
-        nickname = await self.app.push_screen(TextPopup(text="Enter nickname", default="No Name"))
+        nickname = await self.app.push_screen_wait(TextPopup(text="Enter nickname", default="No Name"))
 
-        self.app.me.create_game(game_name,nickname)
+        await self.app.me.create_game(game_name,nickname)
 
 
 

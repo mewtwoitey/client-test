@@ -35,7 +35,7 @@ class Main(App):
 
 
     def on_mount(self) -> None:
-        self.push_screen("join_screen")
+        self.push_screen("home")
 
     def trigger_error(self: Main,message: str):
         

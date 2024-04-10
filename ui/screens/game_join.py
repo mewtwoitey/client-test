@@ -11,6 +11,7 @@ from textual.widget import Widget
 from textual.reactive import reactive
 
 
+
 class PlayerName(Widget):
     """class used to make the player list on the board screen."""
 
@@ -23,7 +24,13 @@ class PlayerName(Widget):
     def render(self: PlayerName) -> str:
         return f"Player {self.player_num!s} : {self.nickname}"
 
+class GameName(Widget):
 
+    game_name : reactive[str] = reactive("No Name")
+
+
+    def render(self: GameName) -> str:
+        return f"{self.game_name}"
 class GameJoinScreen(Screen):
     CSS_PATH = Path(str(Path.cwd()) + "/ui/css/game_join.tcss")
 
@@ -33,7 +40,7 @@ class GameJoinScreen(Screen):
 
 
     def compose(self) -> ComposeResult:
-        yield Label("No game name", id= "game_name_label")
+        yield GameName(id="game_name_label")
         with Container(id = "player_names_list"):
             yield PlayerName(id="player_name_1",pos=1)
             yield PlayerName(id="player_name_2",pos=2)
@@ -51,7 +58,7 @@ class GameJoinScreen(Screen):
         self.current_pos += 1
 
     def set_game_name(self: GameJoinScreen, game_name :str):
-        self.query_one("#game_name_label").label = game_name
+        self.query_one("#game_name_label").game_name = game_name
 
 
 

@@ -16,6 +16,6 @@ GameJoinScreen PlayerName {
     
 }
 
-GameJoinScreen #player_load_bar  {
-    
+GameJoinScreen GameName {
+    height:auto;
 }

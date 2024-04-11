@@ -33,7 +33,7 @@ class NetworkManager(ApplicationSession):
 
     async def process_broadcast(self: NetworkManager,message:str):
         from_json = ujson.loads(message)
-        game = self.ui_app.me.player.game
+        game = self.me.player.game
         game_screen: GameScreen = self.ui_app.get_screen("game")
 
         match from_json["event"]:
@@ -120,7 +120,7 @@ class NetworkManager(ApplicationSession):
 
             case "PLAYER_JOIN":
                 game_join = self.ui_app.get_screen("game_join")
-                game_join.add_player(from_json["nickname"])
+                game_join.player_add(from_json["nickname"])
                 game.add_player(from_json)
 
             case "GAME_START":
@@ -184,6 +184,6 @@ class NetworkManager(ApplicationSession):
     async def subscribe_to_game(self: NetworkManager, game_id:int):
         self.subscribe(self.process_broadcast,f"games.{game_id}.events")
 
+
     async def get_players(self: NetworkManager,token:str, game_id: int)-> Result:
         return await self.call_function("com.games.get_players", token, game_id)
-    

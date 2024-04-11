@@ -162,7 +162,7 @@ class Me:
         self.player = Player(nickname=nickname, player_id=self.player_id, game_object=game_object)
         game_object.players.append(self.player)
 
-        self.ui_app.network.subscribe_to_game(game_id)
+        await self.ui_app.network.subscribe_to_game(game_id)
 
         await self.ui_app.push_screen("game_join")
 

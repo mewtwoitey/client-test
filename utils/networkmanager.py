@@ -124,7 +124,7 @@ class NetworkManager(ApplicationSession):
                 game.add_player(from_json)
 
             case "GAME_START":
-                pass
+                game.start_game()
 
 
 

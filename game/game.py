@@ -18,11 +18,11 @@ class Game:
         self.board = Board(self)
         self.current_turn : int = 0
         self.game_id: int = game_id
-        self.players: list[Player] = []
+        self.players: dict[str,Player] = {}
 
-    def get_player(self: Game,player_id:int) -> Player | None:
+    def get_player(self: Game,player_id: int) -> Player | None:
         try:
-            to_return = self._players[player_id]
+            to_return = self.players[player_id]
         except IndexError:
             to_return = None
         return to_return
@@ -35,11 +35,14 @@ class Game:
         game_screen = self.network.ui_app.get_screen("game")
         game_screen.query_one("phase_text").player_nick = player_nick
 
-    def add_player(self: Game, info: dict) -> None:
+    def add_player(self: Game, info: dict) -> Player:
         player_object = Player(nickname=info["nickname"],
                                 player_id=info["player_id"],
                                 game_object=self)
-        self.players.append(player_object)
+
+        player_object.screen_pos = len(self.players) + 1
+        self.players[info["player_id"]] = player_object
+        return player_object
 
     def start_game(self: Game):
         self.network.ui_app.push_screen("game")

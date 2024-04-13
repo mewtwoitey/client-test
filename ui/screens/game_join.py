@@ -10,6 +10,8 @@ from textual.widgets import Label, ProgressBar
 from textual.widget import Widget
 from textual.reactive import reactive
 
+from game.user import Player
+
 
 
 class PlayerName(Widget):
@@ -50,12 +52,12 @@ class GameJoinScreen(Screen):
 
 
 
-    def player_add(self: GameJoinScreen, player_name:str):
-        self.query_one(f"#player_name_{self.current_pos}").nickname = player_name
+    def player_add(self: GameJoinScreen, player_object : Player):
+        self.query_one(f"#player_name_{player_object.screen_pos}").nickname = player_object.nick
 
-        self.query_one("#player_load_bar").progress = self.current_pos
+        self.query_one("#player_load_bar").progress = player_object.screen_pos
 
-        self.current_pos += 1
+
 
     def set_game_name(self: GameJoinScreen, game_name :str):
         self.query_one("#game_name_label").game_name = game_name

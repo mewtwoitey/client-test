@@ -111,7 +111,8 @@ class GameScreen(Screen):
                 await self.app.decision_made.set()
 
         await self.app.push_screen(
-            ConfirmationPopup()
+            ConfirmationPopup(),
+            select_option
         )
 
     @on(Button.Pressed, "#decision_button")

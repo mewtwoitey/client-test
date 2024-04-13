@@ -153,14 +153,13 @@ class Me:
         await self.ui_app.network.play_card()
 
     async def join_game(self: Me, game_id: int, nickname: str, game_name:str):
-        res = await self.ui_app.network.join_game(self.ui_app.network.me.token, game_id, nickname)
+        res = await self.ui_app.network.join_game(self.token, game_id, nickname)
 
         if not res.successful:
             self.ui_app.trigger_error(res.error_msg)
 
         game_object = Game(self.ui_app.network, game_id)
-        self.player = Player(nickname=nickname, player_id=self.player_id, game_object=game_object)
-        game_object.players.append(self.player)
+        
 
         await self.ui_app.network.subscribe_to_game(game_id)
 
@@ -171,9 +170,14 @@ class Me:
 
         players = await self.ui_app.network.get_players(self.token, game_id)
 
-        for player_object in players.value:
-            game_join_screen.player_add(player_object["nickname"])
-            self.player.game.add_player(player_object)
+        for player_dict in players.value:
+            player_object = game_object.add_player(player_dict)
+            game_join_screen.player_add(player_object)
+            
+            
+
+        self.player = game_object.players[self.player_id]
+        
 
     async def create_game(self: Me, game_name: str, nickname: str):
         game_res = await self.ui_app.network.create_game(self.token, game_name)

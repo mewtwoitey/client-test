@@ -74,5 +74,10 @@ class Player:
         game_screen = self.game.network.ui_app.get_screen("game")
         game_screen.query_one(f"#player_list_stats_{self.screen_pos}").priority = priority
 
+    def give_gem(self: Player, gem_id:int) -> None:
+        self.gems.append(gem_id)
+        game_screen = self.game.network.ui_app.get_screen("game")
+        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").gems = len(self.gems)
+
 
 

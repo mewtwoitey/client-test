@@ -161,3 +161,4 @@ cython_debug/
 .python-version
 save.sav
 ui/custom/widgets/__pycache__/image.cpython-312.pyc
+release/*

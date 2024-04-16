@@ -9,6 +9,7 @@ from textual.reactive import Reactive
 from textual.widget import Widget
 from textual.widgets import Button, SelectionList
 from textual.widgets.selection_list import Selection
+from textual.widgets.option_list import Option
 
 from ui.custom.screens.popup import ConfirmationPopup, ListPopup, TextPopup
 from ui.custom.screens.subscreen import SubScreen
@@ -38,7 +39,7 @@ class CardManagement(SubScreen):
     def __init__(self: SubScreen, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
 
-        self.css_path = [*self.CSS_PATH, Path(str(Path.cwd()) + "/ui/css/search.tcss")]
+        self.css_path = [*self.CSS_PATH, Path(str(Path.cwd()) + "/ui/css/card_selection.tcss")]
         self.current_deck = ""
 
     def compose(self: SubScreen) :
@@ -126,10 +127,16 @@ class CardManagement(SubScreen):
 
         self.app.network.me.update_file()
 
+    @on(Button.Pressed, "#deck_selector")
     async def deck_selection(self):
 
         deck_names = []
-        # get all the decks here
+        deck_names.append(Option("Create a deck", id="creation_request"))
+        deck_names.extend([
+            Option(deck_name, id=deck_name)
+            for deck_name, _ in
+            self.app.network.me.decks.items()
+        ])
 
         deck_name = await self.app.push_screen_wait(ListPopup(items=deck_names))
 
@@ -137,6 +144,7 @@ class CardManagement(SubScreen):
             await self.create_new_deck()
 
         self.current_deck = deck_name
+        await self.refresh_card_list()
 
 
 
@@ -156,6 +164,15 @@ class CardManagement(SubScreen):
 
         self.app.network.me.update_file()
 
+
+    @on(SelectionList.SelectionHighlighted)
+    async def refresh_card_info(self, details: SelectionList.SelectionHighlighted):
+        card_id = details.selection.id
+
+        card_object:Card = self.app.card_manager.get_card(card_id).value
+        card_widget = self.query_one(CardInfo)
+        card_widget.card_id = card_id
+        card_widget.description = card_object.description
 
 
 

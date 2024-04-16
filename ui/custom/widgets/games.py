@@ -8,9 +8,13 @@ from textual.widget import Widget
 class PlayerList(Widget):
     """class used to make the player list on the board screen."""
 
-    player_num : reactive[int | None]= reactive(0)
+    
     pos : reactive[int | None] = reactive(0)
     nickname : reactive[str | None] = reactive("test name")
+    
+    def __init__(self, *children: Widget, name: str | None = None, id: str | None = None, classes: str | None = None, disabled: bool = False, player_num:int) -> None:
+        super().__init__(*children, name=name, id=id, classes=classes, disabled=disabled)
+        self.player_num = player_num
 
     def render(self: PlayerList) -> str:
         return f"Player {self.player_num!s} : {self.nickname}\nPosition: {self.pos!s}"
@@ -26,7 +30,7 @@ class Phase(Widget):
 class PlayerListStats(Widget):
     """Class used for displaying stats in the stats menu."""
 
-    player_num : reactive[int | None]= reactive(0)
+    
     pos : reactive[int | None] = reactive(0)
     nickname : reactive[str | None] = reactive("test name")
     draw_chance: reactive[float] = reactive(0.33)
@@ -36,6 +40,10 @@ class PlayerListStats(Widget):
     luck: reactive[float] = reactive(0.7)
     priority: reactive[int] = reactive(100)
     gems: reactive[int] = reactive(0)
+    
+    def __init__(self, *children: Widget, name: str | None = None, id: str | None = None, classes: str | None = None, disabled: bool = False, player_num:int) -> None:
+        super().__init__(*children, name=name, id=id, classes=classes, disabled=disabled)
+        self.player_num = player_num
 
 
     def render(self: PlayerListStats) -> str:
@@ -50,7 +58,7 @@ Priority: {self.priority!s}"""
 
 
 class CardPanel(Widget):
-    name : reactive[str | None] = reactive("Placeholder Name")
+    card_name : reactive[str | None] = reactive("Placeholder Name")
     description: reactive[str| None] = reactive("Placeholder description")
 
 

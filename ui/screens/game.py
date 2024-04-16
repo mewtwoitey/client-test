@@ -30,10 +30,10 @@ class GameScreen(Screen):
                         with Container(id="board_side_cont"):
 
                             #for the player listing
-                            yield PlayerList(id="player_list_1")
-                            yield PlayerList(id="player_list_2")
-                            yield PlayerList(id="player_list_3")
-                            yield PlayerList(id="player_list_4")
+                            yield PlayerList(id="player_list_1", player_num=1)
+                            yield PlayerList(id="player_list_2", player_num=2)
+                            yield PlayerList(id="player_list_3", player_num=3)
+                            yield PlayerList(id="player_list_4", player_num=4)
 
                             #current phase
                             yield Phase(id="phase_text")
@@ -49,14 +49,14 @@ class GameScreen(Screen):
 
             with TabPane("Statistics"):
                     with Container(id = "stats_cont"):
-                            yield PlayerListStats(id = "player_list_stats_1")
-                            yield PlayerListStats(id = "player_list_stats_2")
-                            yield PlayerListStats(id = "player_list_stats_3")
-                            yield PlayerListStats(id = "player_list_stats_4")
+                            yield PlayerListStats(id = "player_list_stats_1",player_num=1)
+                            yield PlayerListStats(id = "player_list_stats_2",player_num=2)
+                            yield PlayerListStats(id = "player_list_stats_3",player_num=3)
+                            yield PlayerListStats(id = "player_list_stats_4",player_num=4)
 
             with TabPane("Decision"):
                 with Container(classes = "vertical_cont"):
-                    yield CardPanel()
+                    yield CardPanel(id="card_information")
                     yield DecisionPanel()
 
                 with Container(classes="vertical_cont"):
@@ -124,6 +124,7 @@ class GameScreen(Screen):
     async def card_button_pressed(self:GameScreen):
         await self.app.network.me.play_card()
         
+    
 
 
 

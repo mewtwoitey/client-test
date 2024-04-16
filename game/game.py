@@ -36,10 +36,9 @@ class Game:
         game_screen.query_one("phase_text").player_nick = player_nick
 
     def add_player(self: Game, info: dict) -> Player:
-        player_object = Player(nickname=info["nickname"],
-                                player_id=info["player_id"],
-                                game_object=self)
-
+        player_object = Player(player_id=info["player_id"],
+                                game_object=self,nick=info["nickname"])
+        
         player_object.screen_pos = len(self.players) + 1
         self.players[info["player_id"]] = player_object
         return player_object

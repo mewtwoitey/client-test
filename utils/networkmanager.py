@@ -105,6 +105,8 @@ class NetworkManager(ApplicationSession):
                 player.set_priority(from_json["priority"])
                 player.set_move_min(from_json["move_min"])
                 player.set_move_max(from_json["move_max"])
+                player.set_position(from_json["position"])
+                player.set_nick(from_json["nick"])
 
             case "DO_ACTION":
                 game_screen.log_event(from_json["text"])
@@ -188,3 +190,5 @@ class NetworkManager(ApplicationSession):
 
     async def get_players(self: NetworkManager,token:str, game_id: int)-> Result:
         return await self.call_function("com.games.get_players", token, game_id)
+    
+    

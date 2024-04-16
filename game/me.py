@@ -9,6 +9,7 @@ from utils.useful import Result
 
 if TYPE_CHECKING:
     from main import Main
+    from game.cards.card import Card
 
 
 class Me:
@@ -152,14 +153,13 @@ class Me:
 
         await self.ui_app.network.play_card()
 
-    async def join_game(self: Me, game_id: int, nickname: str, game_name:str):
+    async def join_game(self: Me, game_id: int, nickname: str, game_name: str):
         res = await self.ui_app.network.join_game(self.token, game_id, nickname)
 
         if not res.successful:
             self.ui_app.trigger_error(res.error_msg)
 
         game_object = Game(self.ui_app.network, game_id)
-        
 
         await self.ui_app.network.subscribe_to_game(game_id)
 
@@ -173,11 +173,8 @@ class Me:
         for player_dict in players.value:
             player_object = game_object.add_player(player_dict)
             game_join_screen.player_add(player_object)
-            
-            
 
         self.player = game_object.players[self.player_id]
-        
 
     async def create_game(self: Me, game_name: str, nickname: str):
         game_res = await self.ui_app.network.create_game(self.token, game_name)
@@ -185,3 +182,70 @@ class Me:
         # TODO error checking
 
         await self.join_game(game_id, nickname=nickname, game_name=game_name)
+
+    async def set_hand(self: Me, card_id: int) -> None:
+        card_object_res = self.ui_app.card_manager.get_card(card_id=int)
+
+        if not card_object_res.successful:
+            self.ui_app.trigger_error("Card not found, the cards stored may not be up to date")
+
+        card_object: Card = card_object_res.value
+
+        game_screen = self.ui_app.get_screen("game")
+
+        card_panel = game_screen.query_one("#card_information")
+
+        card_panel.card_name = card_object.name
+        card_panel.description = card_object.description
+
+        self.hand = card_id
+
+    def add_card_to_deck(self, deck_name:str, card_id: int):
+        if deck_name not in self.decks:
+            return Result(False, "deck not found")
+        
+        deck = self.decks[deck_name]
+
+        # the the current number of occurrences
+        
+        occurrences = deck.get(card_id, 0)
+
+        occurrences += 1
+        
+        # check it does not go above card limit
+        if card_id not in self.cards:
+            return Result(False, "Don't have that card.")
+
+        allowed_occurrences = self.cards[card_id]
+        
+        if allowed_occurrences < occurrences:
+            return Result(False, "To many card have been added to the deck")
+
+        deck[card_id] = occurrences
+        
+        return Result(True)
+
+    def remove_card_from_deck(self, deck_name:str, card_id:int):
+        if deck_name not in self.decks:
+            return Result(False, "deck not found")
+
+        deck = self.decks[deck_name]
+
+        # the the current number of occurrences
+
+        occurrences = deck.get(card_id, 0)
+
+        occurrences -= 1
+
+        # check it does not go above card limit
+        if card_id not in self.cards:
+            return Result(False, "Don't have that card.")
+
+        allowed_occurrences = self.cards[card_id]
+
+        if allowed_occurrences < occurrences:
+            return Result(False, "To many card have been added to the deck")
+
+        deck[card_id] = occurrences
+
+        return Result(True)

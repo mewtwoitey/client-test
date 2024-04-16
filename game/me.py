@@ -203,15 +203,15 @@ class Me:
     def add_card_to_deck(self, deck_name:str, card_id: int):
         if deck_name not in self.decks:
             return Result(False, "deck not found")
-        
+
         deck = self.decks[deck_name]
 
         # the the current number of occurrences
-        
+
         occurrences = deck.get(card_id, 0)
 
         occurrences += 1
-        
+
         # check it does not go above card limit
         if card_id not in self.cards:
             return Result(False, "Don't have that card.")
@@ -247,5 +247,22 @@ class Me:
             return Result(False, "To many card have been added to the deck")
 
         deck[card_id] = occurrences
+
+        return Result(True)
+
+
+    def update_deck(self, deck_name:str, card_ids: list[int]):
+        if deck_name not in self.decks:
+            return Result(False, "deck not found")
+
+        del self.decks[deck_name]
+
+
+        self.add_deck(deck_name, {})
+
+        for card_id in card_ids:
+            res = self.add_card_to_deck(deck_name, card_id)
+            if not res.successful:
+                return res
 
         return Result(True)

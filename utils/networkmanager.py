@@ -191,4 +191,5 @@ class NetworkManager(ApplicationSession):
     async def get_players(self: NetworkManager,token:str, game_id: int)-> Result:
         return await self.call_function("com.games.get_players", token, game_id)
     
-    
+    async def get_cards(self: NetworkManager, token:str) -> Result:
+        return await self.call_function("com.not_games.get_cards")

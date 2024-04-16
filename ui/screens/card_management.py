@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from textual import on
 from textual.containers import Container
 from textual.reactive import Reactive
 from textual.widget import Widget
@@ -48,10 +49,10 @@ class CardManagement(SubScreen):
                 yield CardInfo(id="card_information")
             with Container(id="card_selector"):
                 yield Button("Select Deck", id="deck_selector")
-                yield SelectionList(id="card_selector").
+                yield SelectionList(id="card_selector")
 
     async def refresh_card_list(self):
-        
+        #get all cards here
         possible_cards = self.app.network.me.cards
         options = []
 
@@ -126,7 +127,7 @@ class CardManagement(SubScreen):
         self.app.network.me.update_file()
 
     async def deck_selection(self):
-        
+
         deck_names = []
         # get all the decks here
 
@@ -136,6 +137,26 @@ class CardManagement(SubScreen):
             await self.create_new_deck()
 
         self.current_deck = deck_name
+
+
+
+    @on(SelectionList.SelectionToggled)
+    async def add_card(self, details: SelectionList.SelectionToggled):
+        selected = details.selection_list.selected
+
+
+
+        card_ids = [selction.id for selction in selected]
+
+        res = self.app.network.me.update_deck(self.current_deck, card_ids)
+
+        if not res.successful:
+            self.app.trigger_error(res.error_msg)
+            return
+
+        self.app.network.me.update_file()
+
+
 
 
 

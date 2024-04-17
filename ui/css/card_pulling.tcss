@@ -1,0 +1,12 @@
+PullingMenu #selection_cont {
+    height: 5fr;
+}
+
+PullingMenu #selection_cont TabPane {
+    height: 1fr;
+}
+
+PullingMenu #money_cont{
+    layout: grid;
+    grid-size: 2;
+}

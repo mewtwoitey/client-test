@@ -143,7 +143,7 @@ class NetworkManager(ApplicationSession):
         return res_object
 
     async def pull_card(self: NetworkManager, theme:str) -> Result:
-        return await self.call_function("com.not_games.pull_card",theme,self.ui_app.me.token)
+        return await self.call_function("com.not_games.pull_card",theme,self.me.token)
 
     async def create_user(self: NetworkManager) -> Result:
         return await self.call_function("com.not_games.create_user")
@@ -192,4 +192,7 @@ class NetworkManager(ApplicationSession):
         return await self.call_function("com.games.get_players", token, game_id)
     
     async def get_cards(self: NetworkManager, token:str) -> Result:
-        return await self.call_function("com.not_games.get_cards")
+        return await self.call_function("com.not_games.get_cards", token)
+    
+    async def get_money(self: NetworkManager, token:str) -> Result:
+        return await self.call_function("com.not_games.money", token)

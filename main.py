@@ -41,7 +41,7 @@ class Main(App):
 
 
     def on_mount(self) -> None:
-        self.push_screen("card_pull")
+        self.push_screen("home")
 
     def trigger_error(self: Main,message: str):
         

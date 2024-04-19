@@ -6,6 +6,7 @@ from game.game import Game
 from game.user import Player
 from utils.storage import read_from_save, write_to_save
 from utils.useful import Result
+from game.cards.card import Rarity
 
 if TYPE_CHECKING:
     from main import Main
@@ -19,6 +20,7 @@ class Me:
         self.cards: dict[int, int] = {}
         self.player: Player = None
         self.hand: int = -1
+        self.money = 0
         self.ui_app: Main = ui_app
 
     def update_file(self: Me) -> Result:
@@ -266,3 +268,67 @@ class Me:
                 return res
 
         return Result(True)
+    
+    
+    def validate_deck(self, deck: dict[int, int]) -> Result:
+        """Checks if a deck complies with the rule around card limits and makes sure they own the cards.
+
+        Parameters
+        ----------
+        deck : dict[int, int]
+            the deck to check
+
+        Returns
+        -------
+        Result
+            successful -> valid, err_msg -> why it failed
+        """
+        has_high_tier_card = False #flag to check if there is already a 'high' tier card
+
+
+
+        for card_id,quantity in deck.items():
+            card_object_res = self.ui_app.card_manager.get_card(card_id=card_id)
+
+            #usually if the card does not exist
+            if not card_object_res.successful:
+                return card_object_res
+
+            card_object: Card = card_object_res.value
+
+            if card_id not in self.cards:
+                return Result(False, f"card not owned: {card_object.name}")
+
+
+
+
+            max_quantity = self.cards[card_id]
+
+            if quantity > max_quantity:
+                return Result(False, f"You do not own {quantity} of {card_object.name}")
+
+
+
+            card_object: Card = card_object_res.value
+
+            rarity = card_object.rarity
+            
+
+            match rarity:
+
+
+                case Rarity.HIGH:
+                    if has_high_tier_card:
+                        return Result(False, "More than 1 high rarity card.")
+
+
+                    has_high_tier_card = True
+
+
+                case Rarity.MEDIUM:
+                    if quantity > 1:
+                        return Result(False, f"You can only have 1 of {card_object.name}")
+
+                case Rarity.COMMON:
+                    if quantity > 3:
+                        return Result(False, f"You can only have 3 of {card_object.name}")

@@ -11,7 +11,7 @@ from textual.widget import Widget
 from ui.custom.screens.subscreen import SubScreen
 from ui.custom.screens.popup import TextPopup
 from textual.reactive import reactive
-from textual.events import Focus
+from textual.events import Mount
 
 from utils.useful import Result
 
@@ -107,6 +107,10 @@ class SearchScreen(SubScreen):
         nickname = await self.app.push_screen_wait(TextPopup(text="Enter nickname", default="No Name"))
 
         await self.app.network.me.create_game(game_name,nickname)
+        
+    @on(Mount)
+    async def mounted(self, details):
+        await self.populate()
 
 
 

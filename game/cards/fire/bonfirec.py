@@ -14,7 +14,7 @@ class Bonfire(Card):
         self.theme = Theme.FIRE
         self.rarity = Rarity.COMMON
         self.description = self.description_generator()+"Always gives the player +1 to their min/max speed."
-        self.play_line("{player.nick} has deployed a bonfire and is now faster!")
+        self.play_line = "{player.nick} has deployed a bonfire and is now faster!"
 
 
     def check(self:Bonfire,player:Player)-> bool:

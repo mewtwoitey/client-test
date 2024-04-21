@@ -8,5 +8,5 @@ PullingMenu #selection_cont TabPane {
 
 PullingMenu #money_cont{
     layout: grid;
-    grid-size: 2;
+    grid-size: 3;
 }

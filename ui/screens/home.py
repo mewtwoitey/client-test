@@ -51,7 +51,7 @@ class Home(Screen):
 
     @on(Button.Pressed,"#pull_button")
     def pull_button(self:"Home") -> None:
-        self.app.trigger_error("This is not implemented yet")
+        self.app.push_screen("card_pull")
 
 
     @on(Button.Pressed, "#play_button")

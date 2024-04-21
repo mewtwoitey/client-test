@@ -86,7 +86,7 @@ class CardManager:
             for theme in themes:
                 for card_file in os.listdir(basedir+theme+"/"):
                     if card_file.endswith("c.py"):
-                        card_class = importlib.import_module(f"src.cards.{theme}.{card_file[:-3]}").exports
+                        card_class = importlib.import_module(f"game.cards.{theme}.{card_file[:-3]}").exports
                         self.card_dict[card_class.card_id]=card_class
 
         except FileNotFoundError:

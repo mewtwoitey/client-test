@@ -1,0 +1,10 @@
+CardManagement #content_cont{
+    layout:grid;
+    grid-size: 2;
+}
+
+CardManagement #button_container {
+    layout: grid;
+    grid-size: 2;
+    height: 20%
+}

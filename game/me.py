@@ -35,8 +35,8 @@ class Me:
 
         from_json = from_json.value
         await self.set_token(from_json["token"])
-        for name, deck in from_json["decks"]:
-            self.add_deck(name, deck)
+        for name, deck in from_json["decks"].items():
+            self.add_deck(name, {int(card_id) : quantity for card_id,quantity in deck.items()})
         return Result(True)
 
     def is_registered(self: Me) -> bool:
@@ -180,8 +180,11 @@ class Me:
 
     async def create_game(self: Me, game_name: str, nickname: str):
         game_res = await self.ui_app.network.create_game(self.token, game_name)
+        if not game_res.successful:
+            self.trigger_error(game_res.error_msg)
+
         game_id = game_res.value
-        # TODO error checking
+
 
         await self.join_game(game_id, nickname=nickname, game_name=game_name)
 
@@ -219,12 +222,12 @@ class Me:
             return Result(False, "Don't have that card.")
 
         allowed_occurrences = self.cards[card_id]
-        
+
         if allowed_occurrences < occurrences:
             return Result(False, "To many card have been added to the deck")
 
         deck[card_id] = occurrences
-        
+
         return Result(True)
 
     def remove_card_from_deck(self, deck_name:str, card_id:int):
@@ -268,8 +271,13 @@ class Me:
                 return res
 
         return Result(True)
-    
-    
+
+
+
+    async def get_cards(self) -> Result:
+        cards_res = await self.ui_app.network.get_cards(self.token)
+        self.cards = {int(card_id): quantity for card_id, quantity in cards_res.value.items()}
+
     def validate_deck(self, deck: dict[int, int]) -> Result:
         """Checks if a deck complies with the rule around card limits and makes sure they own the cards.
 
@@ -312,7 +320,7 @@ class Me:
             card_object: Card = card_object_res.value
 
             rarity = card_object.rarity
-            
+
 
             match rarity:
 
@@ -332,3 +340,6 @@ class Me:
                 case Rarity.COMMON:
                     if quantity > 3:
                         return Result(False, f"You can only have 3 of {card_object.name}")
+
+
+        return Result(True)

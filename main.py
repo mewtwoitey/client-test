@@ -16,6 +16,7 @@ from ui.screens.game_searching import SearchScreen
 from ui.screens.home import Home
 from ui.screens.settings import Settings
 from ui.screens.pulling_menu import PullingMenu
+from ui.screens.card_management import CardManagement
 from utils.networkmanager import NetworkManager
 
 if TYPE_CHECKING:
@@ -26,18 +27,19 @@ class Main(App):
 
     network: NetworkManager
     me : Me
-    SCREENS = {"home": Home(), 
+    SCREENS = {"home": Home(),
             "settings": Settings(),
             "game": GameScreen(),
             "searching": SearchScreen(),
             "game_join": GameJoinScreen(),
-            "card_pull": PullingMenu}  # noqa: RUF012
+            "card_pull": PullingMenu(),
+            "card_management": CardManagement()}  # noqa: RUF012
     decision_made = asyncio.Event()
     decision = None
     def __init__(self) -> None: #session:ApplicationSession,runner:ApplicationRunner
         super().__init__()
         self.card_manager = CardManager(self)
-        #self.card_manager.setup_cards()
+        self.card_manager.setup_cards()
 
 
     def on_mount(self) -> None:

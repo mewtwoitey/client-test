@@ -13,7 +13,8 @@ PyInstaller.__main__.run([
     "main.py",
     "--collect-all",
     "textual",
-    "--onefile",
+    "--collect-"
+    "--onefile"
 ])
 dir_path = str(os.path.dirname(os.path.realpath(__file__)))
 cmd= ["wt"]
@@ -36,6 +37,7 @@ else:
     for copy in range(4):
         location = rf"..\copy{copy+1}"
         shutil.copyfile("dist/main.exe",location+r"\main.exe")
+
         cmd.extend([";", "nt" ,"-d", rf"{dir_path}\{location}"])
     subprocess.call(cmd)
 

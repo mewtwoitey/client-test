@@ -103,3 +103,18 @@ class TextPopup(PopupScreen):
 
 
         self.dismiss(details.value)
+
+
+class InformationPopup(PopupScreen):
+    def __init__(self: PopupScreen, name: str | None = None, id: str | None = None, classes: str | None = None, information: str = "") -> None:
+        super().__init__(name, id, classes)
+        self.information = information
+
+    def compose(self):
+        with Container("main_content"):
+            yield Label(f"{self.information}")
+            yield Button("Exit")
+
+    @on(Button.Pressed)
+    def close_popup(self, details):
+        self.dismiss()

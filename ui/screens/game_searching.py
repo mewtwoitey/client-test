@@ -5,15 +5,16 @@ from pathlib import Path
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal
+from textual.events import Mount
+from textual.reactive import reactive
+from textual.widget import Widget
 from textual.widgets import Button, OptionList
 from textual.widgets.option_list import Option
-from textual.widget import Widget
-from ui.custom.screens.subscreen import SubScreen
-from ui.custom.screens.popup import TextPopup
-from textual.reactive import reactive
-from textual.events import Mount
 
+from ui.custom.screens.popup import TextPopup
+from ui.custom.screens.subscreen import SubScreen
 from utils.useful import Result
+
 
 class GameInfo(Widget):
     player_names : reactive[list] = reactive([])

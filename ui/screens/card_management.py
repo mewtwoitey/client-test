@@ -10,6 +10,7 @@ from textual.widget import Widget
 from textual.widgets import Button, SelectionList
 from textual.widgets.selection_list import Selection
 from textual.widgets.option_list import Option
+from textual.events import Mount
 
 from ui.custom.screens.popup import ConfirmationPopup, ListPopup, TextPopup
 from ui.custom.screens.subscreen import SubScreen
@@ -48,15 +49,19 @@ class CardManagement(SubScreen):
         with Container(id="content_cont"):
             with Container(id ="card_container"):
                 yield CardInfo(id="card_information")
-            with Container(id="card_selector"):
-                yield Button("Select Deck", id="deck_selector")
+            with Container(id="card_selector_cont"):
+                with Container(id="button_container"):
+                    yield Button("Select Deck", id="deck_selector")
+                    yield Button("Save Deck", id="save_deck_button")
                 yield SelectionList(id="card_selector")
 
     async def refresh_card_list(self):
         #get all cards here
+        await self.app.network.me.get_cards()
         possible_cards = self.app.network.me.cards
         options = []
-
+        card_num_arb = 0 # arbitrary number to make sure that entries don't merge
+        
         #get what cards are in the current deck
         if self.current_deck == "":
             in_deck = {} # track which cards are in the current deck
@@ -76,16 +81,16 @@ class CardManagement(SubScreen):
             rarity_dict[card.rarity].extend([card for _ in range(occurrences)])
 
         #reverse the order so the highest cards get put first
-        for value in range(1,len(rarity_dict),-1):
+        for value in range(len(rarity_dict),1,-1):
 
             current_rarity  = Rarity(value)
-            options.append(OptionListDivider(current_rarity.name.lower().capitalize())) # class divider
+            options.append(OptionListDivider(current_rarity.name.lower().capitalize(),0)) # class divider
 
 
-            cards_in_rarity = rarity_dict[current_rarity].sort()
-            for card_id in cards_in_rarity:
-
-                card_object: Card = self.app.card_manager.get_card(card_id).value
+            cards_in_rarity = rarity_dict[current_rarity]
+            cards_in_rarity.sort(key=lambda x: x.name)
+            for card_object in cards_in_rarity:
+                card_id = card_object.card_id
 
 
                 active_card = False
@@ -96,9 +101,8 @@ class CardManagement(SubScreen):
                     else:
                         in_deck[card_id] -= 1
 
-
-                options.append(Selection(prompt=card_object.name,id=card_id,initial_state=active_card))
-
+                options.append(Selection(prompt=card_object.name,value=str(card_id)+" "*card_num_arb,initial_state=active_card))
+                card_num_arb += 1
         card_selection: SelectionList = self.query_one("#card_selector")
         card_selection.clear_options()
         card_selection.add_options(options)
@@ -112,7 +116,7 @@ class CardManagement(SubScreen):
     async def create_new_deck(self):
         default = {}
 
-        deck_name :str = await self.app.push_screen_wait(TextPopup(str="Please enter a deck name:"))
+        deck_name :str = await self.app.push_screen_wait(TextPopup(text="Please enter a deck name:"))
 
         confirmation: bool = await self.app.push_screen_wait(ConfirmationPopup())
 
@@ -121,13 +125,16 @@ class CardManagement(SubScreen):
 
         result = self.app.network.me.add_deck(deck_name,default)
 
-
         if not result.successful:
             self.app.trigger_error("That deck already exists")
-
+        self.current_deck = deck_name
         self.app.network.me.update_file()
 
     @on(Button.Pressed, "#deck_selector")
+    async def deck_selection_button(self):
+        #need to run in worker so this executes it
+        self.run_worker(self.deck_selection())
+
     async def deck_selection(self):
 
         deck_names = []
@@ -142,19 +149,23 @@ class CardManagement(SubScreen):
 
         if deck_name == "creation_request":
             await self.create_new_deck()
+            return
 
         self.current_deck = deck_name
+        self.query_one("#deck_selector").label = deck_name
         await self.refresh_card_list()
 
 
 
-    @on(SelectionList.SelectionToggled)
-    async def add_card(self, details: SelectionList.SelectionToggled):
-        selected = details.selection_list.selected
+    @on(Button.Pressed, "#save_deck_button")
+    async def add_card(self, details):
+        selected = self.query_one("#card_selector").selected
+        if self.current_deck == "":
+            return
 
 
 
-        card_ids = [selction.id for selction in selected]
+        card_ids = [int(selection.rstrip()) for selection in selected]
 
         res = self.app.network.me.update_deck(self.current_deck, card_ids)
 
@@ -167,13 +178,15 @@ class CardManagement(SubScreen):
 
     @on(SelectionList.SelectionHighlighted)
     async def refresh_card_info(self, details: SelectionList.SelectionHighlighted):
-        card_id = details.selection.id
+        card_id = details.selection.value
 
-        card_object:Card = self.app.card_manager.get_card(card_id).value
+        card_object:Card = self.app.card_manager.get_card(int(card_id.rstrip(" "))).value
         card_widget = self.query_one(CardInfo)
         card_widget.card_id = card_id
         card_widget.description = card_object.description
 
-
+    @on(Mount)
+    async def mounted(self, details):
+        await self.refresh_card_list()
 
 

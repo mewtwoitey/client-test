@@ -15,9 +15,10 @@ class Gale(Card):
         self.card_id = 13
         self.theme = Theme.WIND
         self.rarity = Rarity.HIGH
+        self.name = "Gale"
         self.description = self.description_generator()+"If the player has no gems, sacrifice 5 priority to get a gem"
         self.play_line = "{player.nick} got sluggish but found a gem."
-        self.name = "Gale"
+
 
     def check(self: Card, player: Player) -> bool:
         if len(player.gems) >= 1:

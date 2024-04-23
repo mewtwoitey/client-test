@@ -16,6 +16,7 @@ from ui.custom.screens.popup import ConfirmationPopup, ListPopup, TextPopup
 from ui.custom.screens.subscreen import SubScreen
 
 from game.cards.card import Rarity
+from utils.useful import get_base_path
 
 if TYPE_CHECKING:
     from main import Main
@@ -40,7 +41,7 @@ class CardManagement(SubScreen):
     def __init__(self: SubScreen, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
 
-        self.css_path = [*self.CSS_PATH, Path(str(Path.cwd()) + "/ui/css/card_selection.tcss")]
+        self.css_path = [*self.CSS_PATH, Path(get_base_path() + "/ui/css/card_selection.tcss")]
         self.current_deck = ""
 
     def compose(self: SubScreen) :
@@ -81,7 +82,7 @@ class CardManagement(SubScreen):
             rarity_dict[card.rarity].extend([card for _ in range(occurrences)])
 
         #reverse the order so the highest cards get put first
-        for value in range(len(rarity_dict),1,-1):
+        for value in range(len(rarity_dict),0,-1):
 
             current_rarity  = Rarity(value)
             options.append(OptionListDivider(current_rarity.name.lower().capitalize(),0)) # class divider
@@ -168,10 +169,11 @@ class CardManagement(SubScreen):
         card_ids = [int(selection.rstrip()) for selection in selected]
 
         res = self.app.network.me.update_deck(self.current_deck, card_ids)
-
+        
         if not res.successful:
             self.app.trigger_error(res.error_msg)
             return
+
 
         self.app.network.me.update_file()
 

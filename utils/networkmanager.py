@@ -107,6 +107,7 @@ class NetworkManager(ApplicationSession):
                 player.set_move_max(from_json["move_max"])
                 player.set_position(from_json["position"])
                 player.set_nick(from_json["nick"])
+                
 
             case "DO_ACTION":
                 game_screen.log_event(from_json["text"])
@@ -117,7 +118,9 @@ class NetworkManager(ApplicationSession):
 
 
             case "CARD_PLAYED":
-                pass
+                card = self.ui_app.card_manager.get_card(from_json["card_id"])
+                player = self.ui_app.me.player.game.get_player(from_json["player"])
+                game_screen.log_event(card.playline.format(player=player))
 
 
             case "PLAYER_JOIN":
@@ -128,6 +131,14 @@ class NetworkManager(ApplicationSession):
 
             case "GAME_START":
                 game.start_game()
+                
+            case "GAME_END":
+                
+                game.end_game()
+                
+            case "GEM_ACQUIRED":
+                player = game.get_player(from_json["player_id"])
+                player.give_gem(from_json["gem_id"])
 
 
 
@@ -177,7 +188,8 @@ class NetworkManager(ApplicationSession):
     async def get_games(self: NetworkManager, token:str)-> Result:
         return await self.call_function("com.games.get_games", token)
 
-    async def join_game(self: NetworkManager, token: str, game_id:int,nickname:str)-> Result:
+    async def join_game(self: NetworkManager, token: str, game_id:int,nickname:str,deck: dict[int,int])-> Result:
+        deck = {str(card_id):quantity for card_id, quantity in deck.items()}
         return await self.call_function("com.games.join_game", token, game_id,nickname)
 
     async def create_game(self: NetworkManager,token:str, game_name:str)-> Result:

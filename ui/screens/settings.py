@@ -10,11 +10,12 @@ from textual.widgets.option_list import Option
 from ui.custom.screens.popup import ConfirmationPopup, ListPopup
 from ui.custom.screens.subscreen import SubScreen
 
+from utils.useful import get_base_path
 
 class Settings(SubScreen):
     def __init__(self: "Settings", name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
-        self.css_path = [*self.CSS_PATH, Path(str(Path.cwd()) + "/ui/css/settings.tcss")]
+        self.css_path = [*self.CSS_PATH, Path(get_base_path() + "/ui/css/settings.tcss")]
 
     def compose(self: "Settings") -> ComposeResult:
         yield from super().compose()  # gets all the elements from super

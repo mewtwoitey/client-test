@@ -6,10 +6,12 @@ from textual.containers import Container
 from textual.screen import Screen
 from textual.widgets import Button
 
+from utils.useful import get_base_path
+
 
 class SubScreen(Screen):
     # a screen dedicated to being a sub menu like the settings or instructions
-    CSS_PATH = [Path(str(Path.cwd()) + "/ui/css/sub.tcss")]  # noqa: RUF012
+    CSS_PATH = [Path(get_base_path() + "/ui/css/sub.tcss")]  # noqa: RUF012
     BINDINGS = [  # noqa: RUF012
         ("escape, backspace ","pop_screen()","goes back a screen"),
     ]

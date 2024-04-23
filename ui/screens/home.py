@@ -8,10 +8,11 @@ from textual.widgets import Button, Placeholder
 
 from ui.custom.widgets.image import Image
 from ui.custom.screens.popup import TextPopup
+from utils.useful import get_base_path
 
 
 class Home(Screen):
-    CSS_PATH = Path(str(Path.cwd()) + "/ui/css/home.tcss")
+    CSS_PATH = Path(get_base_path() + "/ui/css/home.tcss")
     BINDINGS = [  # noqa: RUF012
         ("escape, backspace","quit()","Exits the game"),
     ]

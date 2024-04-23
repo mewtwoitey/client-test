@@ -11,10 +11,11 @@ from textual.widgets.option_list import Option
 
 from ui.custom.screens.popup import ConfirmationPopup, ListPopup
 from ui.custom.widgets.games import CardPanel, DecisionPanel, Phase, PlayerList, PlayerListStats
+from utils.useful import get_base_path
 
 
 class GameScreen(Screen):
-    CSS_PATH = Path(str(Path.cwd()) + "/ui/css/game.tcss")
+    CSS_PATH = Path(get_base_path() + "/ui/css/game.tcss")
     decision_function = None
     options = []
 

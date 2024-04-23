@@ -69,12 +69,10 @@ TextPopup Input {
     border: none;
 }
 
-TextPopup #main_content{
-    width: 40%;
+InformationPopup #main_content{
+    width: auto;
     align: center middle;
     height: 20%;
     border: heavy $accent;
 }
-TextPopup Label {
-    border: none;
-}
+

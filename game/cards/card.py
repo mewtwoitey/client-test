@@ -5,6 +5,9 @@ import os
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
+import sys
+
+from textual import log
 
 from utils.useful import Result
 
@@ -74,6 +77,13 @@ class CardManager:
 
 
     def setup_cards(self: CardManager) -> Result:
+        if hasattr(sys, "_MEIPASS"):
+            self.setup_from_file()
+        else:
+            self.setup_cards_from_files()
+
+
+    def setup_cards_from_files(self) -> Result:
         #get all the folders that contain cards
         themes = [t.name.lower() for t in Theme]
         basedir = str(Path.cwd()) + "/game/cards/"
@@ -85,9 +95,22 @@ class CardManager:
         try:
             for theme in themes:
                 for card_file in os.listdir(basedir+theme+"/"):
+                    log(card_file)
                     if card_file.endswith("c.py"):
+                        log(f"game.cards.{theme}.{card_file[:-3]}")
                         card_class = importlib.import_module(f"game.cards.{theme}.{card_file[:-3]}").exports
                         self.card_dict[card_class.card_id]=card_class
 
         except FileNotFoundError:
             self.ui.trigger_error("Card files not found")
+            
+    def setup_from_file(self):
+        with open(sys._MEIPASS +r"\card_imports.txt","r") as f:
+            imports = f.read().splitlines()
+            
+            
+        for needed in imports:
+            card_class = importlib.import_module(needed).exports
+            self.card_dict[card_class.card_id]=card_class
+
+

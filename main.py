@@ -21,7 +21,10 @@ from utils.networkmanager import NetworkManager
 
 if TYPE_CHECKING:
     from game.me import Me
+import sys
+import os
 
+#gotten from https://pyinstaller.org/en/stable/runtime-information.html it is not my code
 
 class Main(App):
 

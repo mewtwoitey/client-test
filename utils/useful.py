@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import ujson
+import sys
 
 if TYPE_CHECKING:
     from typing import Any, Self
@@ -28,3 +30,8 @@ class Result:
 
 
 
+def get_base_path():
+    """Returns the base path of any resources."""
+    if hasattr(sys, "_MEIPASS"):
+        return sys._MEIPASS
+    return str(Path.cwd())

@@ -10,10 +10,12 @@ from textual.screen import Screen
 from textual.widgets import Button, Label, OptionList, Input
 from textual.widgets.option_list import Option
 
+from utils.useful import get_base_path
+
 
 class PopupScreen(Screen):
     #class to handle css for making a popup widget
-    CSS_PATH = [Path(str(Path.cwd()) + "/ui/css/popup.tcss")]  # noqa: RUF012
+    CSS_PATH = [Path(get_base_path() + "/ui/css/popup.tcss")]  # noqa: RUF012
 
 
     def __init__(self: "PopupScreen", name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
@@ -111,7 +113,7 @@ class InformationPopup(PopupScreen):
         self.information = information
 
     def compose(self):
-        with Container("main_content"):
+        with Container(id="main_content"):
             yield Label(f"{self.information}")
             yield Button("Exit")
 

@@ -11,9 +11,9 @@ from textual.widget import Widget
 from textual.widgets import Button, OptionList
 from textual.widgets.option_list import Option
 
-from ui.custom.screens.popup import TextPopup
+from ui.custom.screens.popup import TextPopup, ListPopup
 from ui.custom.screens.subscreen import SubScreen
-from utils.useful import Result
+from utils.useful import Result, get_base_path
 
 
 class GameInfo(Widget):
@@ -35,7 +35,7 @@ class SearchScreen(SubScreen):
     def __init__(self: SubScreen, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
         self.game_cache = {}
-        self.css_path = [*self.CSS_PATH, Path(str(Path.cwd()) + "/ui/css/search.tcss")]
+        self.css_path = [*self.CSS_PATH, Path(get_base_path() + "/ui/css/search.tcss")]
 
 
     def compose(self) -> ComposeResult:
@@ -88,11 +88,29 @@ class SearchScreen(SubScreen):
         game_list = self.query_one(OptionList)
         higlight_index = game_list.highlighted
         game_id = game_list.get_option_at_index(higlight_index)
-
-
-
+        
+        
 
         nickname = await self.app.push_screen_wait(TextPopup(text="Enter nickname", default="No Name"))
+
+        deck_names = [
+            Option(deck_name, id=deck_name)
+            for deck_name, _ in
+            self.app.network.me.decks.items()
+        ]
+        deck_names.append(Option("Exit", "make_sure_this_is_long"))
+        got_deck = False
+        while not got_deck:
+            deck_name = await self.app.push_screen_wait(ListPopup(items = deck_names))
+            if deck_name == "make_sure_this_is_long":
+                return
+
+            deck = self.network.me.decks[deck_name]
+            if len(deck) == 0:
+                self.app.trigger_error("That deck is empty")
+                continue
+            got_deck = True
+
 
         await self.app.network.me.join_game(game_id.id, nickname, game_id.prompt)
 
@@ -106,9 +124,28 @@ class SearchScreen(SubScreen):
         game_name = await self.app.push_screen_wait(TextPopup(text="Enter game name", default="No Name"))
 
         nickname = await self.app.push_screen_wait(TextPopup(text="Enter nickname", default="No Name"))
-
-        await self.app.network.me.create_game(game_name,nickname)
         
+        deck_names = [
+            Option(deck_name, id=deck_name)
+            for deck_name, _ in
+            self.app.network.me.decks.items()
+        ]
+        deck_names.append(Option("Exit", "make_sure_this_is_long"))
+        got_deck = False
+        while not got_deck:
+            deck_name = await self.app.push_screen_wait(ListPopup(items = deck_names))
+            if deck_name == "make_sure_this_is_long":
+                return
+
+            deck = self.app.network.me.decks[deck_name]
+            if len(deck) == 0:
+                self.app.trigger_error("That deck is empty")
+                continue
+            got_deck = True
+
+
+        await self.app.network.me.create_game(game_name,nickname,deck)
+
     @on(Mount)
     async def mounted(self, details):
         await self.populate()

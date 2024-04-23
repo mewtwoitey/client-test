@@ -11,6 +11,7 @@ from textual.widget import Widget
 from textual.reactive import reactive
 
 from game.user import Player
+from utils.useful import get_base_path
 
 
 
@@ -34,7 +35,7 @@ class GameName(Widget):
     def render(self: GameName) -> str:
         return f"{self.game_name}"
 class GameJoinScreen(Screen):
-    CSS_PATH = Path(str(Path.cwd()) + "/ui/css/game_join.tcss")
+    CSS_PATH = Path(get_base_path() + "/ui/css/game_join.tcss")
 
     def __init__(self, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)

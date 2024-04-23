@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -17,6 +18,8 @@ from game.cards.card import Theme
 from ui.custom.screens.subscreen import SubScreen
 from ui.custom.screens.popup import InformationPopup
 
+from ui.custom.widgets.image import Image
+from utils.useful import get_base_path
 
 if TYPE_CHECKING:
     from main import Main
@@ -31,9 +34,10 @@ class Money(Widget):
     def render(self) -> str:
         return f"Money: {self.money}"
     
-    async def on_mount(self, event: Mount) -> None:
+    async def on_mount(self, event) -> None:
         #get the money the players have
         money = await self.app.network.get_money(self.app.network.me.token)
+        self.app.network.me.money = money.value
         self.money = money.value
 
 class PullingMenu(SubScreen):
@@ -42,7 +46,7 @@ class PullingMenu(SubScreen):
     def __init__(self: SubScreen, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
         super().__init__(name, id, classes)
 
-        self.css_path = [*self.CSS_PATH, Path(str(Path.cwd()) + "/ui/css/card_pulling.tcss")]
+        self.css_path = [*self.CSS_PATH, Path(get_base_path() + "/ui/css/card_pulling.tcss")]
 
 
     def compose(self: SubScreen) :
@@ -51,17 +55,20 @@ class PullingMenu(SubScreen):
             with Container(id="selection_cont"):
                 with TabbedContent(id="theme_selector"):
                     with TabPane("fire", id="fire_theme"):
-                        yield Placeholder(id="card_banner_fire", classes="banner_image")
+
+                        yield Image(id="card_banner_fire", classes="banner_image",filename="fire.png")
+
                     with TabPane("wind", id="wind_theme"):
-                        yield Placeholder(id="card_banner_wind", classes="banner_image")
+                        yield Image(id="card_banner_wind", classes="banner_image", filename="wind.png")
+
                     with TabPane("earth", id="earth_theme"):
-                        yield Placeholder(id="card_banner_earth", classes="banner_image")
+                        yield Image(id="card_banner_earth", classes="banner_image", filename="earth.png")
             with Container(id="money_cont"):
                 yield Money()
                 yield Button("Pull",id="pull_button")
                 yield Button("Management", id="management_button")
-                
-                
+
+
     @on(Button.Pressed, "#pull_button")
     async def pull_card_button(self, details: Button.Pressed):
         

@@ -155,7 +155,7 @@ class Me:
 
         await self.ui_app.network.play_card()
 
-    async def join_game(self: Me, game_id: int, nickname: str, game_name: str):
+    async def join_game(self: Me, game_id: int, nickname: str, game_name: str, deck: dict[int,int]):
         res = await self.ui_app.network.join_game(self.token, game_id, nickname)
 
         if not res.successful:
@@ -178,7 +178,7 @@ class Me:
 
         self.player = game_object.players[self.player_id]
 
-    async def create_game(self: Me, game_name: str, nickname: str):
+    async def create_game(self: Me, game_name: str, nickname: str,deck:dict[int,int]):
         game_res = await self.ui_app.network.create_game(self.token, game_name)
         if not game_res.successful:
             self.trigger_error(game_res.error_msg)
@@ -186,7 +186,7 @@ class Me:
         game_id = game_res.value
 
 
-        await self.join_game(game_id, nickname=nickname, game_name=game_name)
+        await self.join_game(game_id, nickname=nickname, game_name=game_name,deck=deck)
 
     async def set_hand(self: Me, card_id: int) -> None:
         card_object_res = self.ui_app.card_manager.get_card(card_id=int)
@@ -275,6 +275,7 @@ class Me:
 
 
     async def get_cards(self) -> Result:
+        self.cards = {}
         cards_res = await self.ui_app.network.get_cards(self.token)
         self.cards = {int(card_id): quantity for card_id, quantity in cards_res.value.items()}
 

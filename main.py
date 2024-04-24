@@ -43,13 +43,15 @@ class Main(App):
         super().__init__()
         self.card_manager = CardManager(self)
         self.card_manager.setup_cards()
+        self.decision_made = asyncio.Event()
+        self.decision = None
 
 
     def on_mount(self) -> None:
+        self.push_screen("game")
         self.push_screen("home")
 
     def trigger_error(self: Main,message: str):
-        
         self.app.push_screen(
             ErrorPopup(err_msg=message),
         )
@@ -57,9 +59,13 @@ class Main(App):
 
 
     async def on_load(self) -> None:
-
+        if os.path.exists("ip.txt"):
+            with open("ip.txt") as f:
+                ip_addr = f.read()
+        else:
+            ip_addr = "127.0.0.1"
         #start the networking on the load
-        runner = ApplicationRunner("ws://127.0.0.1:1234/ws","game")
+        runner = ApplicationRunner(f"ws://{ip_addr}:1234/ws","game")
         runner.extra = {"ui":self}
         b = runner.run(NetworkManager,start_loop=False)
         asyncio.create_task(b)

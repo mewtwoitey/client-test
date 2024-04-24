@@ -6,7 +6,7 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal
 from textual.screen import Screen
-from textual.widgets import Label, ProgressBar
+from textual.widgets import Label, ProgressBar,Button
 from textual.widget import Widget
 from textual.reactive import reactive
 
@@ -50,6 +50,7 @@ class GameJoinScreen(Screen):
             yield PlayerName(id="player_name_3",pos=3)
             yield PlayerName(id="player_name_4",pos=4)
         yield ProgressBar(total=4,id="player_load_bar",show_eta=False)
+        yield Button("Start", id="start_game_button")
 
 
 
@@ -62,6 +63,11 @@ class GameJoinScreen(Screen):
 
     def set_game_name(self: GameJoinScreen, game_name :str):
         self.query_one("#game_name_label").game_name = game_name
+        
+        
+    @on(Button.Pressed)
+    async def start_game(self):
+        await self.app.network.start_game()
 
 
 

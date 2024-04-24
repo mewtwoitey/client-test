@@ -130,6 +130,7 @@ class CardManagement(SubScreen):
             self.app.trigger_error("That deck already exists")
         self.current_deck = deck_name
         self.app.network.me.update_file()
+        
 
     @on(Button.Pressed, "#deck_selector")
     async def deck_selection_button(self):

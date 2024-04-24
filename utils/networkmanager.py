@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING, Any, List
 
 import ujson
@@ -36,9 +37,10 @@ class NetworkManager(ApplicationSession):
         game = self.me.player.game
         game_screen: GameScreen = self.ui_app.get_screen("game")
 
+
         match from_json["event"]:
             #each event is specific so needs to be handled differently
-            case "NEXT_TURN":
+            case "NEW_TURN":
                 player_id: int = from_json["player"]
                 player = self.me.player.game.get_player(player_id)
                 game.current_turn = player_id
@@ -47,10 +49,13 @@ class NetworkManager(ApplicationSession):
 
                 game.next_turn(player.nick)
 
-                #TODO(me): expand upon this
+                if player.player_id == self.me.player_id:
+                    #run as task so it does not block anything else
+                    asyncio.create_task(self.me.run_turn(from_json["can_draw"]))
 
             case "PING":
                 #used for checking if a client is still there
+                game_screen.log_event("Received the ping")
                 await self.call_function("com.games.pong",game.game_id,self.ui_app.me.token)
 
             case "PLAYER_ELIMINATED":
@@ -65,13 +70,14 @@ class NetworkManager(ApplicationSession):
                     self.ui_app.trigger_error("The game has been disconnected!")
                     return
 
-                game_screen.log_event("The player {} has been disconnected.")
+                game_screen.log_event(f"The player {player.nick} has been disconnected.")
+                player.set_nick("Disconnected")
         
 
             case "PHASE_CHANGE":
                 phase = from_json["phase"]
                 game.phase_change(phase)
-                game_screen.log_event("It is now the {}")
+                game_screen.log_event(f"It is now the {phase}")
 
             case "CARD_DRAW":
                 player_id: int = from_json["player"]
@@ -85,7 +91,7 @@ class NetworkManager(ApplicationSession):
                 new_pos = from_json["pos"]
                 passed_start = from_json["passed_start"]
                 player.set_position(new_pos)
-                game_screen.log_event(f"{player.nick} has moved {from_json["spaces"]}{"." if passed_start ==0 else f" and passed start {passed_start} times."}")
+                game_screen.log_event(f"{player.nick} has moved {from_json["spaces"]} spaces{"." if passed_start ==0 else f" and passed start {passed_start} times."}")
 
             case "END_TURN":
                 player_id: int = from_json["player"]
@@ -114,7 +120,7 @@ class NetworkManager(ApplicationSession):
 
 
             case "BOARD_SYNC":
-                game.board.json_convert(from_json["board"])
+                pass
 
 
             case "CARD_PLAYED":
@@ -124,19 +130,20 @@ class NetworkManager(ApplicationSession):
 
 
             case "PLAYER_JOIN":
+                game_screen.log_event("Player join")
                 game_join = self.ui_app.get_screen("game_join")
                 player_object = game.add_player(from_json)
                 game_join.player_add(player_object)
 
 
             case "GAME_START":
-                game.start_game()
-                
+                await game.start_game()
             case "GAME_END":
                 
                 game.end_game()
                 
             case "GEM_ACQUIRED":
+                game_screen.log_event(f"{from_json['player_id']} got a gem!")
                 player = game.get_player(from_json["player_id"])
                 player.give_gem(from_json["gem_id"])
 
@@ -190,11 +197,11 @@ class NetworkManager(ApplicationSession):
 
     async def join_game(self: NetworkManager, token: str, game_id:int,nickname:str,deck: dict[int,int])-> Result:
         deck = {str(card_id):quantity for card_id, quantity in deck.items()}
-        return await self.call_function("com.games.join_game", token, game_id,nickname)
+        return await self.call_function("com.games.join_game", token, game_id,nickname,deck)
 
     async def create_game(self: NetworkManager,token:str, game_name:str)-> Result:
         return await self.call_function("com.games.create_game", token, game_name)
-    
+
 
     async def subscribe_to_game(self: NetworkManager, game_id:int):
         self.subscribe(self.process_broadcast,f"games.{game_id}.events")
@@ -202,9 +209,15 @@ class NetworkManager(ApplicationSession):
 
     async def get_players(self: NetworkManager,token:str, game_id: int)-> Result:
         return await self.call_function("com.games.get_players", token, game_id)
-    
+
     async def get_cards(self: NetworkManager, token:str) -> Result:
         return await self.call_function("com.not_games.get_cards", token)
-    
+
     async def get_money(self: NetworkManager, token:str) -> Result:
         return await self.call_function("com.not_games.money", token)
+
+    async def start_game(self: NetworkManager) -> Result:
+        return await self.call_function("com.games.start_game", self.me.token, self.me.player.game.game_id)
+    
+    async def leave_game(self):
+        return await self.call_function("com.games.leave_game", self.me.token, self.me.player.game.game_id)

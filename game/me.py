@@ -105,7 +105,7 @@ class Me:
         if can_draw:
             card_res = await self.ui_app.network.draw_card(game_id, token)
             if card_res.successful:
-                self.hand = card_res.value
+                self.set_hand(card_res.value)
             # TODO ERROR check this
 
         # 2 prompt for moving spaces
@@ -115,7 +115,7 @@ class Me:
             pass
         game_screen.decision_moves(space_res.value)
         await self.ui_app.decision_made.wait()
-        await self.ui_app.decision_made.clear()
+        self.ui_app.decision_made.clear()
         spaces = self.ui_app.decision
 
         activities = await self.ui_app.network.move(game_id, token, spaces)
@@ -125,10 +125,10 @@ class Me:
         activities = activities.value
 
         # 3 prompt user to choose an activity
-        game_screen.decision_activity(space_res.value)
+        game_screen.decision_activity(activities)
 
         await self.ui_app.decision_made.wait()
-        await self.ui_app.decision_made.clear()
+        self.ui_app.decision_made.clear()
         activity_id = self.ui_app.decision
 
         activity_results = await self.ui_app.network.do_action(game_id, token, activity_id)
@@ -137,9 +137,10 @@ class Me:
             pass
 
         # 4 end turn
+        game_screen.decision_end()
         await self.ui_app.decision_made.wait()
-        await self.ui_app.decision_made.clear()
-        await self.ui_app.network.end_turn()
+        self.ui_app.decision_made.clear()
+        await self.ui_app.network.end_turn(self.player.game.game_id,self.token)
         game_screen.clear_decision()
 
     async def play_card(self: Me) -> Result:
@@ -154,16 +155,18 @@ class Me:
             self.ui_app.trigger_error(can_be_played.error_msg)
 
         await self.ui_app.network.play_card()
+        self.set_hand(None)
 
     async def join_game(self: Me, game_id: int, nickname: str, game_name: str, deck: dict[int,int]):
-        res = await self.ui_app.network.join_game(self.token, game_id, nickname)
+        await self.ui_app.network.subscribe_to_game(game_id)
+        res = await self.ui_app.network.join_game(self.token, game_id, nickname,deck)
 
         if not res.successful:
             self.ui_app.trigger_error(res.error_msg)
+            return
 
         game_object = Game(self.ui_app.network, game_id)
 
-        await self.ui_app.network.subscribe_to_game(game_id)
 
         await self.ui_app.push_screen("game_join")
 
@@ -181,7 +184,8 @@ class Me:
     async def create_game(self: Me, game_name: str, nickname: str,deck:dict[int,int]):
         game_res = await self.ui_app.network.create_game(self.token, game_name)
         if not game_res.successful:
-            self.trigger_error(game_res.error_msg)
+            self.ui_app.trigger_error(game_res.error_msg)
+            return
 
         game_id = game_res.value
 
@@ -189,16 +193,22 @@ class Me:
         await self.join_game(game_id, nickname=nickname, game_name=game_name,deck=deck)
 
     async def set_hand(self: Me, card_id: int) -> None:
+        
+        game_screen = self.ui_app.get_screen("game")
+
+        card_panel = game_screen.query_one("#card_information")
+        if card_id is None:
+            card_panel.card_name = "None"
+            card_panel.description = "Nothing"
+            self.hand = -1
         card_object_res = self.ui_app.card_manager.get_card(card_id=int)
 
         if not card_object_res.successful:
             self.ui_app.trigger_error("Card not found, the cards stored may not be up to date")
+            return
 
         card_object: Card = card_object_res.value
 
-        game_screen = self.ui_app.get_screen("game")
-
-        card_panel = game_screen.query_one("#card_information")
 
         card_panel.card_name = card_object.name
         card_panel.description = card_object.description

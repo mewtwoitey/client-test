@@ -48,7 +48,8 @@ class Player:
     def set_draw(self: Player, draw: float) -> None:
         self.draw_chance = draw
         game_screen = self.game.network.ui_app.get_screen("game")
-        game_screen.query_one(f"#player_list_stats_{self.screen_pos}").draw_chance = draw
+        stats_widget = game_screen.query_one(f"#player_list_stats_{self.screen_pos}")
+        stats_widget.draw_chance = draw
 
     def set_move_min(self: Player, move_min: int) -> None:
         self.move_min = move_min

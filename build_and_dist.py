@@ -23,11 +23,11 @@ PyInstaller.__main__.run([
     "--collect-all",
     "game.cards.earth",
     "--add-data",
-    "card_imports.txt;.",
+    "card_imports.txt:.",
     "--add-data",
-    "images;images",
+    "images:images",
     "--add-data",
-    "ui/css;ui/css",
+    "ui/css:ui/css",
     "--onefile",
     "--noconfirm"
     

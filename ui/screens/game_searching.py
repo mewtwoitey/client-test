@@ -105,14 +105,14 @@ class SearchScreen(SubScreen):
             if deck_name == "make_sure_this_is_long":
                 return
 
-            deck = self.network.me.decks[deck_name]
+            deck = self.app.network.me.decks[deck_name]
             if len(deck) == 0:
                 self.app.trigger_error("That deck is empty")
-                continue
+                return
             got_deck = True
 
 
-        await self.app.network.me.join_game(game_id.id, nickname, game_id.prompt)
+        await self.app.network.me.join_game(game_id.id, nickname, game_id.prompt,deck)
 
 
     @on(Button.Pressed,"#create_game_button")
@@ -140,7 +140,7 @@ class SearchScreen(SubScreen):
             deck = self.app.network.me.decks[deck_name]
             if len(deck) == 0:
                 self.app.trigger_error("That deck is empty")
-                continue
+                return
             got_deck = True
 
 

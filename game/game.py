@@ -29,11 +29,11 @@ class Game:
 
     def phase_change(self: Game, phase: str):
         game_screen = self.network.ui_app.get_screen("game")
-        game_screen.query_one("phase_text").phase = phase
+        game_screen.query_one("#phase_text").phase = phase
 
     def next_turn(self: Game, player_nick: str):
         game_screen = self.network.ui_app.get_screen("game")
-        game_screen.query_one("phase_text").player_nick = player_nick
+        game_screen.query_one("#phase_text").player_nick = player_nick
 
     def add_player(self: Game, info: dict) -> Player:
         player_object = Player(player_id=info["player_id"],
@@ -44,7 +44,7 @@ class Game:
         return player_object
 
     def start_game(self: Game):
-        self.network.ui_app.push_screen("game")
+        self.network.ui_app.switch_screen("game")
 
     def end_game(self: Game):
         self.network.ui_app.push_screen("home")

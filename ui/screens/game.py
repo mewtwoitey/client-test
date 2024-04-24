@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from textual import on
 from textual.app import ComposeResult
@@ -11,13 +12,17 @@ from textual.widgets.option_list import Option
 
 from ui.custom.screens.popup import ConfirmationPopup, ListPopup
 from ui.custom.widgets.games import CardPanel, DecisionPanel, Phase, PlayerList, PlayerListStats
+from ui.custom.widgets.image import Board_Image
 from utils.useful import get_base_path
 
+if TYPE_CHECKING:
+    from main import Main
 
 class GameScreen(Screen):
     CSS_PATH = Path(get_base_path() + "/ui/css/game.tcss")
     decision_function = None
     options = []
+    app: Main
 
     def compose(self: GameScreen) -> ComposeResult:
         with TabbedContent():
@@ -61,8 +66,8 @@ class GameScreen(Screen):
                     yield DecisionPanel()
 
                 with Container(classes="vertical_cont"):
-                    yield Button("Play Card", id = "play_card_button")
-                    yield Button("Take Decision", id = "decision_button")
+                    yield Button("Play Card", id = "player_card_button", disabled=True)
+                    yield Button("Take Decision", id = "decision_button",disabled=True)
 
 
     def log_event(self, text: str):
@@ -88,7 +93,7 @@ class GameScreen(Screen):
 
         async def select_option(num):
             self.app.decision = int(num)
-            await self.app.decision_made.set()
+            self.app.decision_made.set()
 
 
         await self.app.push_screen(
@@ -109,7 +114,7 @@ class GameScreen(Screen):
     async def end_button_function(self: GameScreen):
         async def select_option(select: bool) -> None:
             if select:
-                await self.app.decision_made.set()
+                self.app.decision_made.set()
 
         await self.app.push_screen(
             ConfirmationPopup(),
@@ -118,6 +123,8 @@ class GameScreen(Screen):
 
     @on(Button.Pressed, "#decision_button")
     async def decision_button_pressed(self:GameScreen):
+        if self.decision_function is None:
+            return
         await self.decision_function()
 
 
@@ -125,7 +132,10 @@ class GameScreen(Screen):
     async def card_button_pressed(self:GameScreen):
         await self.app.network.me.play_card()
         
-    
+    @on(Button.Pressed, "#surrender_button")
+    async def surrender(self):
+        await self.app.network.leave_game()
+
 
 
 

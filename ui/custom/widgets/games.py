@@ -10,7 +10,7 @@ class PlayerList(Widget):
 
     
     pos : reactive[int | None] = reactive(0)
-    nickname : reactive[str | None] = reactive("test name")
+    nickname : reactive[str | None] = reactive("no name")
     
     def __init__(self, *children: Widget, name: str | None = None, id: str | None = None, classes: str | None = None, disabled: bool = False, player_num:int) -> None:
         super().__init__(*children, name=name, id=id, classes=classes, disabled=disabled)
@@ -21,7 +21,7 @@ class PlayerList(Widget):
     
 
 class Phase(Widget):
-    player_nick : reactive[str | None] = reactive("test name")
+    player_nick : reactive[str | None] = reactive("no name")
     phase: reactive[str | None] = reactive("draw")
 
     def render(self: Phase) -> str:
@@ -32,13 +32,13 @@ class PlayerListStats(Widget):
 
     
     pos : reactive[int | None] = reactive(0)
-    nickname : reactive[str | None] = reactive("test name")
-    draw_chance: reactive[float] = reactive(0.33)
-    move_min: reactive[int] = reactive(2)
-    move_max: reactive[int] = reactive(8)
+    nickname : reactive[str | None] = reactive("no name")
+    draw_chance: reactive[float] = reactive(0)
+    move_min: reactive[int] = reactive(0)
+    move_max: reactive[int] = reactive(0)
     money: reactive[int] = reactive(0)
-    luck: reactive[float] = reactive(0.7)
-    priority: reactive[int] = reactive(100)
+    luck: reactive[float] = reactive(0)
+    priority: reactive[int] = reactive(0)
     gems: reactive[int] = reactive(0)
     
     def __init__(self, *children: Widget, name: str | None = None, id: str | None = None, classes: str | None = None, disabled: bool = False, player_num:int) -> None:
@@ -63,7 +63,7 @@ class CardPanel(Widget):
 
 
     def render(self: CardPanel) -> str:
-        return f"Current Card: {self.name}\nDescription: {self.description}"
+        return f"Current Card: {self.description}"
     
 
 class DecisionPanel(Widget):

@@ -7,13 +7,14 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "3.12.3"
 textual = "^0.52.1"
 autobahn = {extras = ["asyncio"], version = "^23.6.2"}
 pillow = "10.2.0"
 textual-dev = "^1.5.1"
 ujson = "^5.9.0"
 numpy = "^1.26.4"
+pyinstaller = "^6.6.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = { version= "^0.1.14"}

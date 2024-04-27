@@ -19,14 +19,15 @@ Phase {
 
 PlayerListStats {
     height: auto;
-    width: auto;
+    width: 40%;
     border: ascii $accent;
+    text-align: center;
 }
 
 GameScreen #stats_cont {
     align: center top;
     layout: grid;
-    grid-size: 4 1;
+    grid-size: 2 2;
 }
 
 GameScreen .vertical_cont {

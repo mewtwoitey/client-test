@@ -12,7 +12,7 @@ from textual.widgets.option_list import Option
 
 from ui.custom.screens.popup import ConfirmationPopup, ListPopup
 from ui.custom.widgets.games import CardPanel, DecisionPanel, Phase, PlayerList, PlayerListStats
-from ui.custom.widgets.image import Board_Image
+from ui.custom.widgets.image import Image
 from utils.useful import get_base_path
 
 if TYPE_CHECKING:
@@ -29,7 +29,8 @@ class GameScreen(Screen):
             with TabPane("Board"):
                 with Horizontal():
                     with Container(id="board_cont"):
-                        yield Placeholder()
+                        yield Image(filename="board.png")
+                        #yield Placeholder()
 
 
                     with Center():
@@ -63,7 +64,7 @@ class GameScreen(Screen):
             with TabPane("Decision"):
                 with Container(classes = "vertical_cont"):
                     yield CardPanel(id="card_information")
-                    yield DecisionPanel()
+                    yield DecisionPanel(id="decision_panel")
 
                 with Container(classes="vertical_cont"):
                     yield Button("Play Card", id = "player_card_button", disabled=True)

@@ -75,9 +75,17 @@ class NetworkManager(ApplicationSession):
         
 
             case "PHASE_CHANGE":
+                #dictionary to make it so the players a sentence
+                phase_dict = {"DRAW":"Drawing",
+                              "GET_MOVES": "Move Generation",
+                              "CHOOSING_MOVES":"Choosing Moves",
+                              "CHOOSING_ACTION":"Choosing Action",
+                              "END_TURN":"Ending Turn",
+                              }
                 phase = from_json["phase"]
-                game.phase_change(phase)
-                game_screen.log_event(f"It is now the {phase}")
+                phase_text = phase_dict[phase]
+                game.phase_change(phase_text)
+                game_screen.log_event(f"It is now {phase_text}")
 
             case "CARD_DRAW":
                 player_id: int = from_json["player"]
@@ -123,10 +131,11 @@ class NetworkManager(ApplicationSession):
                 pass
 
 
-            case "CARD_PLAYED":
-                card = self.ui_app.card_manager.get_card(from_json["card_id"])
-                player = self.ui_app.me.player.game.get_player(from_json["player"])
-                game_screen.log_event(card.playline.format(player=player))
+            case "PLAY_CARD":
+                card = self.ui_app.card_manager.get_card(from_json["card_id"]).value
+                player_id = from_json["player"]
+                player = game.get_player(player_id)
+                game_screen.log_event(card.play_line.format(player=player))
 
 
             case "PLAYER_JOIN":
@@ -139,8 +148,7 @@ class NetworkManager(ApplicationSession):
             case "GAME_START":
                 await game.start_game()
             case "GAME_END":
-                
-                game.end_game()
+                await game.end_game()
                 
             case "GEM_ACQUIRED":
                 game_screen.log_event(f"{from_json['player_id']} got a gem!")
@@ -188,8 +196,8 @@ class NetworkManager(ApplicationSession):
         return await self.call_function("com.games.end_turn", game_id,token)
 
 
-    async def play_card(self: NetworkManager, game_id:int, token:str, card_id:  int)-> Result:
-        return await self.call_function("com.games.play_card", game_id, token, card_id)
+    async def play_card(self: NetworkManager, game_id:int, token:str)-> Result:
+        return await self.call_function("com.games.play_card", game_id, token)
 
 
     async def get_games(self: NetworkManager, token:str)-> Result:
@@ -219,5 +227,5 @@ class NetworkManager(ApplicationSession):
     async def start_game(self: NetworkManager) -> Result:
         return await self.call_function("com.games.start_game", self.me.token, self.me.player.game.game_id)
     
-    async def leave_game(self):
+    async def leave_game(self: NetworkManager):
         return await self.call_function("com.games.leave_game", self.me.token, self.me.player.game.game_id)

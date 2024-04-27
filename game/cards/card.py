@@ -54,7 +54,7 @@ class CardManager:
         self.ui = ui
 
     def get_card(self: CardManager, card_id: int) -> Result:
-        if card_id not in self.card_dict:
+        if card_id not in self.card_dict.keys():
             return Result(False,"Card id not found")
         
         return Result(True, value=self.card_dict[card_id])

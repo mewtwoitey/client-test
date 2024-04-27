@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import ujson
 
 from game.user import Player
+from ui.custom.screens.popup import InformationPopup
 
 if TYPE_CHECKING:
     from utils.networkmanager import NetworkManager
@@ -46,8 +47,9 @@ class Game:
     def start_game(self: Game):
         self.network.ui_app.switch_screen("game")
 
-    def end_game(self: Game):
-        self.network.ui_app.push_screen("home")
+    async def end_game(self: Game):
+        await self.network.ui_app.push_screen("home")
+        await self.network.ui_app.push_screen(InformationPopup(information="The game has ended!"))
 
 class Board:
     def __init__(self: Board,game: Game,length: int=20) -> None:

@@ -108,13 +108,16 @@ class Me:
             card_res = await self.ui_app.network.draw_card(game_id, token)
             if card_res.successful:
                 await self.set_hand(card_res.value)
-            # TODO ERROR check this
+            else:
+                self.ui_app.trigger_error(card_res.error_msg)
+                return
+
 
         # 2 prompt for moving spaces
         space_res = await self.ui_app.network.get_moves(game_id, token)
         if not space_res.successful:
-            # TODO server probably down
-            pass
+            self.ui_app.trigger_error(space_res.error_msg)
+            return
         descision_panel.decision = "Moves"
         game_screen.decision_moves(space_res.value)
         await self.ui_app.decision_made.wait()
@@ -123,7 +126,7 @@ class Me:
 
         activities = await self.ui_app.network.move(game_id, token, spaces)
         if not activities.successful:
-            pass
+            self.ui_app.trigger_error(activities.error_msg)
 
         activities = activities.value
 
@@ -137,7 +140,7 @@ class Me:
         activity_results = await self.ui_app.network.do_action(game_id, token, activity_id)
 
         if not activity_results.successful:
-            pass
+            self.ui_app.trigger_error(activity_results.error_msg)
 
         # 4 end turn
         game_screen.decision_end()
@@ -279,7 +282,7 @@ class Me:
         del self.decks[deck_name]
 
 
-        self.add_deck(deck_name, {})
+        self.add_deck(deck_name, {}) #re-do the deck from scratch
 
         for card_id in card_ids:
             res = self.add_card_to_deck(deck_name, card_id)

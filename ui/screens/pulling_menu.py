@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 from textual import on
 from textual.containers import Container
 
-from textual.events import Mount
+from textual.events import ScreenResume
 from textual.widgets import Button, Placeholder, RichLog, TabbedContent, TabPane
 from textual.widget import AwaitMount, Widget
 from textual.reactive import Reactive
@@ -29,16 +29,12 @@ if TYPE_CHECKING:
 class Money(Widget):
     app : Main
     money : Reactive[int] = Reactive(0)
-    
-    
+
+
     def render(self) -> str:
         return f"Money: {self.money}"
-    
-    async def on_mount(self, event) -> None:
-        #get the money the players have
-        money = await self.app.network.get_money(self.app.network.me.token)
-        self.app.network.me.money = money.value
-        self.money = money.value
+
+
 
 class PullingMenu(SubScreen):
     app : Main
@@ -110,3 +106,10 @@ class PullingMenu(SubScreen):
     @on(Button.Pressed, "#management_button")
     async def management(self):
         self.app.push_screen("card_management")
+
+    @on(ScreenResume)
+    async def refresh_coins(self):
+        money = await self.app.network.get_money(self.app.network.me.token)
+        self.app.network.me.money = money.value
+        money_widget = self.query_one(Money)
+        money_widget.money = money.value

@@ -56,10 +56,13 @@ class SearchScreen(SubScreen):
         games = await self.app.network.get_games(self.app.network.me.token)
         games = games.value
         options = []
+        
         for game in games:
             self.game_cache[game["game_id"]] = game
             options.append(Option(game["game_name"],id=game["game_id"]))
+
         options_list = self.query_one("#games_list")
+        #redo list from scratch
         options_list.clear_options()
         options_list.add_options(options)
     
@@ -88,8 +91,9 @@ class SearchScreen(SubScreen):
         game_list = self.query_one(OptionList)
         higlight_index = game_list.highlighted
         game_id = game_list.get_option_at_index(higlight_index)
-        
-        
+        await self.app.network.me.get_cards()
+
+
 
         nickname = await self.app.push_screen_wait(TextPopup(text="Enter nickname", default="No Name"))
 
@@ -100,6 +104,7 @@ class SearchScreen(SubScreen):
         ]
         deck_names.append(Option("Exit", "make_sure_this_is_long"))
         got_deck = False
+
         while not got_deck:
             deck_name = await self.app.push_screen_wait(ListPopup(items = deck_names))
             if deck_name == "make_sure_this_is_long":
@@ -108,6 +113,10 @@ class SearchScreen(SubScreen):
             deck = self.app.network.me.decks[deck_name]
             if len(deck) == 0:
                 self.app.trigger_error("That deck is empty")
+                return
+            valid_res: Result = self.app.network.me.validate_deck(deck)
+            if not valid_res.successful:
+                self.app.trigger_error(valid_res.error_msg)
                 return
             got_deck = True
 

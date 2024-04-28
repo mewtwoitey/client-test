@@ -62,7 +62,7 @@ class CardManagement(SubScreen):
         possible_cards = self.app.network.me.cards
         options = []
         card_num_arb = 0 # arbitrary number to make sure that entries don't merge
-        
+
         #get what cards are in the current deck
         if self.current_deck == "":
             in_deck = {} # track which cards are in the current deck
@@ -89,7 +89,7 @@ class CardManagement(SubScreen):
 
 
             cards_in_rarity = rarity_dict[current_rarity]
-            cards_in_rarity.sort(key=lambda x: x.name)
+            cards_in_rarity.sort(key=lambda x: x.name) #sort them by card name to make it organised
             for card_object in cards_in_rarity:
                 card_id = card_object.card_id
 
@@ -103,8 +103,11 @@ class CardManagement(SubScreen):
                         in_deck[card_id] -= 1
 
                 options.append(Selection(prompt=card_object.name,value=str(card_id)+" "*card_num_arb,initial_state=active_card))
+
                 card_num_arb += 1
+
         card_selection: SelectionList = self.query_one("#card_selector")
+        #re-do the menu from scratch
         card_selection.clear_options()
         card_selection.add_options(options)
 
